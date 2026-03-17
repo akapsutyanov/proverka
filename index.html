@@ -97,6 +97,7 @@ footer{text-align:center;padding:24px;color:var(--text-muted);font-size:10px;let
 .fade-in{animation:fadeIn .5s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 </style>
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.min.js"></script>
 </head>
 <body>
 <header>
@@ -187,7 +188,7 @@ footer{text-align:center;padding:24px;color:var(--text-muted);font-size:10px;let
     <div class="res-header">
       <span style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold-light);">Результат анализа</span>
       <span id="result-badge" class="badge">—</span>
-      <button onclick="window.print()" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-muted);padding:5px 14px;border-radius:2px;cursor:pointer;font-size:11px;font-family:'Montserrat',sans-serif;letter-spacing:.08em;text-transform:uppercase;">Печать</button>
+      <button onclick="downloadDocx()" id="dl-btn" style="margin-left:auto;background:linear-gradient(135deg,var(--gold-dark),var(--gold-mid));border:none;color:#0d0b08;padding:6px 16px;border-radius:2px;cursor:pointer;font-size:11px;font-family:'Montserrat',sans-serif;letter-spacing:.08em;text-transform:uppercase;font-weight:600;">⬇ Скачать КП (.docx)</button>
     </div>
     <div class="res-body">
       <div class="tab-bar">
@@ -598,6 +599,120 @@ ${text}
     btn.disabled=false; spinner.style.display='none'; lbl.textContent='Анализировать и создать КП';
   }
 }
+
+function downloadDocx() {
+  const { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+          AlignmentType, WidthType, BorderStyle, ShadingType, HeadingLevel } = docx;
+
+  const client = document.getElementById('kp-client').value.trim() || 'Заказчик';
+  const qty    = parseInt(document.getElementById('kp-qty').value) || 1;
+  const tier   = document.getElementById('kp-price-tier').value;
+  const tierLabel = PRICE_LABELS[tier] || tier;
+  const now    = new Date().toLocaleDateString('ru-RU');
+
+  // Get matched items same logic as buildKP
+  const kpDiv  = document.getElementById('kp-content');
+  const rows   = kpDiv.querySelectorAll('.kp-table tbody tr');
+
+  const border = { style: BorderStyle.SINGLE, size: 1, color: 'AAAAAA' };
+  const borders = { top: border, bottom: border, left: border, right: border };
+
+  const cellOpts = (w) => ({ borders, width: { size: w, type: WidthType.DXA }, margins: { top: 60, bottom: 60, left: 100, right: 100 } });
+
+  // Header row
+  const headerCells = ['Артикул','Наименование','Примечание','Цена (руб.)','Кол-во','Сумма (руб.)'].map((t,i)=>{
+    const widths = [1200,3000,1800,1200,800,1360];
+    return new TableCell({ ...cellOpts(widths[i]),
+      shading: { fill: '1C1710', type: ShadingType.CLEAR },
+      children: [new Paragraph({ alignment: AlignmentType.CENTER,
+        children: [new TextRun({ text: t, bold: true, size: 18, color: 'C9A84C', font: 'Arial' })] })]
+    });
+  });
+
+  // Data rows from rendered table
+  const dataRows = [];
+  let total = 0;
+  rows.forEach(tr => {
+    const cells = tr.querySelectorAll('td');
+    if(cells.length < 6) return;
+    const texts = Array.from(cells).map(c => c.textContent.trim());
+    const sumStr = texts[5].replace(/\s/g,'').replace('—','0');
+    const sumNum = parseFloat(sumStr) || 0;
+    total += sumNum;
+    const widths = [1200,3000,1800,1200,800,1360];
+    dataRows.push(new TableRow({
+      children: texts.slice(0,6).map((t,i) => new TableCell({
+        ...cellOpts(widths[i]),
+        children: [new Paragraph({
+          alignment: i >= 3 ? AlignmentType.RIGHT : AlignmentType.LEFT,
+          children: [new TextRun({ text: t, size: 18, font: 'Arial', color: '333333' })]
+        })]
+      }))
+    }));
+  });
+
+  // Total row
+  const totalRow = new TableRow({
+    children: [
+      new TableCell({ ...cellOpts(8000), columnSpan: 5,
+        shading: { fill: 'F5D78E', type: ShadingType.CLEAR },
+        children: [new Paragraph({ alignment: AlignmentType.RIGHT,
+          children: [new TextRun({ text: 'ИТОГО (без НДС):', bold: true, size: 20, font: 'Arial', color: '333333' })] })] }),
+      new TableCell({ ...cellOpts(1360),
+        shading: { fill: 'F5D78E', type: ShadingType.CLEAR },
+        children: [new Paragraph({ alignment: AlignmentType.RIGHT,
+          children: [new TextRun({ text: total.toLocaleString('ru-RU') + ' руб.', bold: true, size: 20, font: 'Arial', color: '8B6914' })] })] }),
+    ]
+  });
+
+  const table = new Table({
+    width: { size: 9360, type: WidthType.DXA },
+    columnWidths: [1200, 3000, 1800, 1200, 800, 1360],
+    rows: [new TableRow({ children: headerCells }), ...dataRows, totalRow]
+  });
+
+  const notes = document.getElementById('kp-notes').value.trim();
+
+  const doc = new Document({
+    sections: [{
+      properties: { page: { size: { width: 12240, height: 15840 }, margin: { top: 1080, right: 1080, bottom: 1080, left: 1080 } } },
+      children: [
+        new Paragraph({ children: [new TextRun({ text: 'ООО ПК «Артикул-Мебель»', bold: true, size: 28, font: 'Arial', color: 'C9A84C' })] }),
+        new Paragraph({ children: [new TextRun({ text: 'г. Санкт-Петербург  |  тел. 8 (812) 309-74-59  |  sale@artikul-mebel.ru', size: 18, font: 'Arial', color: '888888' })] }),
+        new Paragraph({ border: { bottom: { style: BorderStyle.SINGLE, size: 4, color: 'C9A84C' } }, children: [] }),
+        new Paragraph({ spacing: { before: 200 }, children: [] }),
+        new Paragraph({ children: [new TextRun({ text: 'КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ', bold: true, size: 32, font: 'Arial', color: '333333' })] }),
+        new Paragraph({ spacing: { after: 60 }, children: [new TextRun({ text: `Дата: ${now}    |    Тип цены: ${tierLabel}    |    Заказчик: ${client}`, size: 18, font: 'Arial', color: '888888' })] }),
+        new Paragraph({ spacing: { before: 200, after: 160 }, children: [] }),
+        table,
+        ...(notes ? [
+          new Paragraph({ spacing: { before: 240 }, children: [] }),
+          new Paragraph({ children: [new TextRun({ text: 'Условия:', bold: true, size: 20, font: 'Arial', color: '333333' })] }),
+          new Paragraph({ children: [new TextRun({ text: notes, size: 18, font: 'Arial', color: '555555' })] }),
+        ] : []),
+        new Paragraph({ spacing: { before: 300 }, children: [] }),
+        new Paragraph({ border: { top: { style: BorderStyle.SINGLE, size: 2, color: 'CCCCCC' } },
+          children: [new TextRun({ text: 'Данное КП сформировано автоматически. Окончательная стоимость согласовывается с менеджером.', size: 16, font: 'Arial', color: 'AAAAAA' })] }),
+      ]
+    }]
+  });
+
+  const btn = document.getElementById('dl-btn');
+  btn.textContent = 'Формирование...';
+  btn.disabled = true;
+
+  Packer.toBlob(doc).then(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `КП_${client}_${now.replace(/\./g,'-')}.docx`;
+    a.click();
+    URL.revokeObjectURL(url);
+    btn.textContent = '⬇ Скачать КП (.docx)';
+    btn.disabled = false;
+  });
+}
+
 </script>
 </body>
 </html>
