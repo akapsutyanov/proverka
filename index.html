@@ -3,187 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Артикул-Мебель — Проверка соответствия ТЗ</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Артикул-Мебель — Проверка ТЗ и КП</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --gold-light: #f5d78e;
-  --gold-mid: #c9a84c;
-  --gold-dark: #8b6914;
-  --gold-shine: #ffeead;
-  --bg-deep: #0d0b08;
-  --bg-surface: #15120c;
-  --bg-card: #1c1710;
-  --bg-input: #211d13;
-  --text-primary: #f0e8d0;
-  --text-muted: #8a7d60;
-  --border: rgba(201,168,76,0.22);
-  --border-hover: rgba(201,168,76,0.55);
+:root{
+  --gold-light:#f5d78e;--gold-mid:#c9a84c;--gold-dark:#8b6914;--gold-shine:#ffeead;
+  --bg-deep:#0d0b08;--bg-surface:#15120c;--bg-card:#1c1710;--bg-input:#211d13;
+  --text-primary:#f0e8d0;--text-muted:#8a7d60;
+  --border:rgba(201,168,76,.22);--border-h:rgba(201,168,76,.55);
+  --ok:#4caf7d;--fail:#e07070;--warn:#c98a4c;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  background:var(--bg-deep);color:var(--text-primary);
-  font-family:'Montserrat',sans-serif;font-weight:300;
-  min-height:100vh;overflow-x:hidden;
-}
-
-header{text-align:center;padding:56px 24px 44px;border-bottom:1px solid var(--border);}
-.ornament{
-  font-size:10px;letter-spacing:.45em;color:var(--gold-mid);text-transform:uppercase;
-  margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:14px;
-}
+body{background:var(--bg-deep);color:var(--text-primary);font-family:'Montserrat',sans-serif;font-weight:300;min-height:100vh;overflow-x:hidden;}
+header{text-align:center;padding:50px 24px 40px;border-bottom:1px solid var(--border);}
+.ornament{font-size:10px;letter-spacing:.45em;color:var(--gold-mid);text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:14px;}
 .ornament::before,.ornament::after{content:'';display:block;height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--gold-mid));}
 .ornament::after{transform:scaleX(-1);}
-h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(30px,5vw,52px);font-weight:500;
-  background:linear-gradient(135deg,var(--gold-light) 0%,var(--gold-mid) 50%,var(--gold-shine) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1.15;margin-bottom:10px;
-}
-.subtitle{font-size:12px;color:var(--text-muted);letter-spacing:.14em;text-transform:uppercase;}
-
-.container{max-width:1080px;margin:0 auto;padding:0 24px;}
-
-.sec-title{
-  font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;
-  color:var(--gold-light);letter-spacing:.06em;margin-bottom:14px;
-  display:flex;align-items:center;gap:10px;
-}
-.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
-
-.card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:28px 30px;margin-bottom:22px;transition:border-color .3s;}
-.card:hover{border-color:var(--border-hover);}
-
-textarea,input[type=text],input[type=password]{
+h1{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,4vw,48px);font-weight:500;background:linear-gradient(135deg,var(--gold-light),var(--gold-mid),var(--gold-shine));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:8px;}
+.subtitle{font-size:11px;color:var(--text-muted);letter-spacing:.14em;text-transform:uppercase;}
+.container{max-width:1120px;margin:0 auto;padding:0 24px;}
+.sec{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--gold-light);letter-spacing:.06em;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.sec::after{content:'';flex:1;height:1px;background:var(--border);}
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:26px 28px;margin-bottom:20px;transition:border-color .3s;}
+.card:hover{border-color:var(--border-h);}
+textarea,input[type=text],input[type=password],input[type=number],select{
   width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:3px;
   color:var(--text-primary);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;
-  padding:11px 15px;outline:none;transition:border-color .3s,box-shadow .3s;resize:vertical;line-height:1.6;
+  padding:10px 14px;outline:none;transition:border-color .3s,box-shadow .3s;line-height:1.6;
+  -webkit-appearance:none;appearance:none;
 }
-textarea:focus,input:focus{border-color:var(--gold-mid);box-shadow:0 0 0 3px rgba(201,168,76,.08);}
-textarea{min-height:200px;}
-label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px;}
-.field{margin-bottom:18px;}
-
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+textarea:focus,input:focus,select:focus{border-color:var(--gold-mid);box-shadow:0 0 0 3px rgba(201,168,76,.08);}
+textarea{resize:vertical;min-height:180px;}
+select{cursor:pointer;}
+select option{background:#1a1506;}
+label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;}
+.field{margin-bottom:16px;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
 @media(max-width:680px){.two-col{grid-template-columns:1fr;}}
-
-.drop-zone{
-  border:1px dashed rgba(201,168,76,.35);border-radius:4px;background:var(--bg-input);
-  padding:32px 20px;text-align:center;cursor:pointer;transition:all .25s;
-  position:relative;overflow:hidden;min-height:120px;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-}
+.three-col{display:grid;grid-template-columns:2fr 1fr 1fr;gap:16px;}
+@media(max-width:680px){.three-col{grid-template-columns:1fr;}}
+.drop-zone{border:1px dashed rgba(201,168,76,.35);border-radius:4px;background:var(--bg-input);padding:28px 20px;text-align:center;cursor:pointer;transition:all .25s;position:relative;min-height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;}
 .drop-zone:hover,.drop-zone.dragover{border-color:var(--gold-mid);background:rgba(201,168,76,.05);}
 .drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
-.drop-icon{font-size:28px;line-height:1;}
-.drop-label{font-size:12px;color:var(--text-muted);letter-spacing:.06em;}
+.drop-icon{font-size:24px;}
+.drop-label{font-size:12px;color:var(--text-muted);}
 .drop-label span{color:var(--gold-mid);}
-.drop-accepted{font-size:11px;color:var(--text-muted);margin-top:2px;}
-
-.file-list{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
-.file-item{
-  display:flex;align-items:center;gap:10px;
-  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);
-  border-radius:3px;padding:8px 12px;font-size:12px;
-}
-.file-item .fname{flex:1;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.file-item .fsize{color:var(--text-muted);white-space:nowrap;}
-.file-item .fremove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;transition:color .2s;}
-.file-item .fremove:hover{color:#e07070;}
-.file-ext{font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:500;background:rgba(201,168,76,.15);color:var(--gold-mid);}
-
-.model-count{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--gold-mid);padding:3px 10px;border:1px solid rgba(201,168,76,.25);border-radius:2px;background:rgba(201,168,76,.06);}
-
-.btn-gold{
-  display:inline-flex;align-items:center;gap:10px;
-  background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold-mid) 50%,var(--gold-dark) 100%);
-  background-size:200% auto;border:none;border-radius:3px;color:#0d0b08;
-  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;
-  letter-spacing:.18em;text-transform:uppercase;padding:14px 40px;cursor:pointer;
-  transition:background-position .4s,transform .15s;
-}
+.file-list{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
+.file-item{display:flex;align-items:center;gap:8px;background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);border-radius:3px;padding:7px 10px;font-size:12px;}
+.fname{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fsize{color:var(--text-muted);white-space:nowrap;}
+.fremove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:14px;padding:0 2px;transition:color .2s;}
+.fremove:hover{color:var(--fail);}
+.fext{font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:2px;font-weight:500;background:rgba(201,168,76,.15);color:var(--gold-mid);}
+.btn-gold{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold-mid) 50%,var(--gold-dark) 100%);background-size:200% auto;border:none;border-radius:3px;color:#0d0b08;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;letter-spacing:.18em;text-transform:uppercase;padding:14px 40px;cursor:pointer;transition:background-position .4s,transform .15s;}
 .btn-gold:hover{background-position:right center;}
 .btn-gold:active{transform:scale(.98);}
 .btn-gold:disabled{opacity:.4;cursor:not-allowed;}
-.btn-row{display:flex;justify-content:center;margin-top:8px;}
-
+.btn-row{display:flex;justify-content:center;margin-top:6px;}
 .spinner{width:17px;height:17px;border:2px solid rgba(13,11,8,.3);border-top-color:#0d0b08;border-radius:50%;animation:spin .7s linear infinite;display:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
-
-
-
+.progress-wrap{margin-top:12px;display:none;}
+.progress-label{font-size:11px;color:var(--text-muted);letter-spacing:.08em;margin-bottom:5px;text-transform:uppercase;}
+.progress-bar{height:2px;background:rgba(201,168,76,.15);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-mid));width:0%;transition:width .4s ease;}
 #result-panel{display:none;margin-top:28px;}
-.result-header{display:flex;align-items:center;gap:14px;padding:18px 26px;background:var(--bg-card);border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;}
-.result-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:500;}
-.badge-success{background:rgba(76,175,125,.14);color:#4caf7d;border:1px solid rgba(76,175,125,.28);}
-.badge-danger{background:rgba(201,76,76,.14);color:#e07070;border:1px solid rgba(201,76,76,.28);}
-.badge-partial{background:rgba(201,138,76,.14);color:#c98a4c;border:1px solid rgba(201,138,76,.28);}
-.result-body{background:var(--bg-surface);border:1px solid var(--border);border-radius:0 0 4px 4px;padding:28px 30px;}
+.res-header{display:flex;align-items:center;gap:12px;padding:16px 24px;background:var(--bg-card);border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;}
+.badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:3px 11px;border-radius:2px;font-weight:500;}
+.badge-ok{background:rgba(76,175,125,.14);color:var(--ok);border:1px solid rgba(76,175,125,.28);}
+.badge-fail{background:rgba(201,76,76,.14);color:var(--fail);border:1px solid rgba(201,76,76,.28);}
+.badge-part{background:rgba(201,138,76,.14);color:var(--warn);border:1px solid rgba(201,138,76,.28);}
+.res-body{background:var(--bg-surface);border:1px solid var(--border);border-radius:0 0 4px 4px;padding:26px 28px;}
 #raw-text{font-size:13px;line-height:1.85;color:var(--text-primary);}
 #raw-text strong{color:var(--gold-light);font-weight:500;}
-
-.progress-wrap{margin-top:14px;display:none;}
-.progress-label{font-size:11px;color:var(--text-muted);letter-spacing:.08em;margin-bottom:6px;text-transform:uppercase;}
-.progress-bar{height:2px;background:rgba(201,168,76,.15);border-radius:2px;overflow:hidden;}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-mid));width:0%;transition:width .4s ease;border-radius:2px;}
-
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px;}
+.tab{padding:10px 20px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;background:none;border-top:none;border-left:none;border-right:none;font-family:'Montserrat',sans-serif;}
+.tab.active{color:var(--gold-mid);border-bottom-color:var(--gold-mid);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+.kp-table{width:100%;border-collapse:collapse;font-size:13px;margin-top:16px;}
+.kp-table th{text-align:left;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);padding:0 10px 10px;border-bottom:1px solid var(--border);font-weight:400;}
+.kp-table td{padding:10px 10px;border-bottom:1px solid rgba(201,168,76,.08);vertical-align:top;}
+.kp-table tr:last-child td{border-bottom:none;}
+.kp-total{font-size:14px;font-weight:500;color:var(--gold-light);margin-top:12px;text-align:right;}
+.kp-model-card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:18px 20px;margin-bottom:12px;}
+.kp-model-name{font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold-light);margin-bottom:4px;}
+.kp-model-art{font-size:11px;color:var(--text-muted);}
+.match-score{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:2px;}
+.score-high{background:rgba(76,175,125,.1);color:var(--ok);border:1px solid rgba(76,175,125,.2);}
+.score-mid{background:rgba(201,138,76,.1);color:var(--warn);border:1px solid rgba(201,138,76,.2);}
+.score-low{background:rgba(201,76,76,.1);color:var(--fail);border:1px solid rgba(201,76,76,.2);}
+.section-divider{height:1px;background:linear-gradient(90deg,transparent,var(--gold-mid),transparent);margin:36px 0;opacity:.3;}
+footer{text-align:center;padding:24px;color:var(--text-muted);font-size:10px;letter-spacing:.1em;border-top:1px solid var(--border);margin-top:40px;}
 .fade-in{animation:fadeIn .5s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-
-footer{text-align:center;padding:28px 24px;color:var(--text-muted);font-size:10px;letter-spacing:.1em;border-top:1px solid var(--border);margin-top:40px;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 </style>
 </head>
 <body>
-
 <header>
   <div class="ornament">Артикул-Мебель</div>
-  <h1>Проверка соответствия ТЗ</h1>
-  <p class="subtitle">Загрузите чертёж или спецификацию модели &nbsp;·&nbsp; Интеллектуальный анализ</p>
+  <h1>Проверка ТЗ &amp; Генератор КП</h1>
+  <p class="subtitle">Сопоставление требований · Анализ соответствия · Коммерческое предложение</p>
 </header>
 
-<div class="container" style="padding-top:36px;padding-bottom:60px;">
+<div class="container" style="padding-top:32px;padding-bottom:60px;">
 
-  <!-- API KEY -->
-
-
+  <!-- ROW 1: TZ + FILES -->
   <div class="two-col">
-    <!-- TZ -->
     <div>
       <div class="card" style="height:100%;">
-        <div class="sec-title">Техническое задание</div>
+        <div class="sec">Техническое задание</div>
         <div class="field">
-          <label>Требования ТЗ — вставьте текст</label>
-          <textarea id="tz-text" placeholder="Вставьте текст технического задания...&#10;&#10;Например:&#10;Количество мест: 3&#10;Высота: ≥ 900 мм&#10;Наполнитель: формованный ППУ ≥ 35 кг/м³&#10;..."></textarea>
+          <label>Требования ТЗ</label>
+          <textarea id="tz-text" placeholder="Вставьте текст технического задания заказчика...&#10;&#10;Например:&#10;Количество мест: 3&#10;Высота: ≥ 900 мм&#10;Материал каркаса: сталь&#10;..."></textarea>
         </div>
       </div>
     </div>
-
-    <!-- FILES -->
     <div>
       <div class="card" style="height:100%;">
-        <div class="sec-title">
-          Файлы моделей
-          <span id="model-count-badge" class="model-count" style="display:none;">
-            <span id="model-count-num">0</span> файлов
-          </span>
-        </div>
+        <div class="sec">Файлы моделей</div>
         <div class="field">
-          <label>Загрузите PDF чертежи / спецификации</label>
+          <label>Чертежи / спецификации (PDF, PNG, JPG)</label>
           <div class="drop-zone" id="drop-zone">
             <input type="file" id="file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.txt" onchange="handleFiles(this.files)"/>
             <div class="drop-icon">⬆</div>
             <div class="drop-label">Перетащите файлы или <span>нажмите для выбора</span></div>
-            <div class="drop-accepted">PDF, PNG, JPG, TXT — несколько файлов сразу</div>
           </div>
           <div class="file-list" id="file-list"></div>
         </div>
         <div class="field">
-          <label>Дополнительный контекст (необязательно)</label>
-          <textarea id="context-text" style="min-height:70px;" placeholder="Артикул, серия, примечания..."></textarea>
+          <label>Текстовое описание изделий (спецификация, состав)</label>
+          <textarea id="spec-text" style="min-height:100px;" placeholder="Вставьте текстовое описание ваших моделей: материалы, размеры, конструктив..."></textarea>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ROW 2: КП параметры -->
+  <div class="card">
+    <div class="sec">Параметры коммерческого предложения</div>
+    <div class="three-col">
+      <div class="field">
+        <label>Заказчик</label>
+        <input type="text" id="kp-client" placeholder="Название организации..."/>
+      </div>
+      <div class="field">
+        <label>Количество изделий (шт)</label>
+        <input type="number" id="kp-qty" value="100" min="1"/>
+      </div>
+      <div class="field">
+        <label>Тип цены из прайса</label>
+        <select id="kp-price-tier">
+          <option value="dealer">Дилерская (от 5 млн)</option>
+          <option value="opt_large">Крупный опт (от 2 млн)</option>
+          <option value="opt_mid" selected>Опт (от 1 млн)</option>
+          <option value="opt_small">Мелкий опт (от 500 тыс)</option>
+          <option value="disc20">Скидка 20% (от 300 тыс)</option>
+          <option value="disc15">Скидка 15% (от 200 тыс)</option>
+          <option value="disc10">Скидка 10% (от 100 тыс)</option>
+          <option value="retail">Розница</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label>Дополнительные условия КП (необязательно)</label>
+      <textarea id="kp-notes" style="min-height:60px;" placeholder="Срок поставки, условия оплаты, доп. услуги..."></textarea>
     </div>
   </div>
 
@@ -192,203 +175,332 @@ footer{text-align:center;padding:28px 24px;color:var(--text-muted);font-size:10p
     <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
   </div>
 
-  <div class="btn-row" style="margin-top:4px;">
-    <button class="btn-gold" id="check-btn" onclick="runCheck()">
-      <span id="btn-label">Проверить соответствие</span>
+  <div class="btn-row">
+    <button class="btn-gold" id="check-btn" onclick="runAnalysis()">
+      <span id="btn-label">Анализировать и создать КП</span>
       <div class="spinner" id="spinner"></div>
     </button>
   </div>
 
   <!-- RESULT -->
   <div id="result-panel" class="fade-in">
-    <div class="result-header">
-      <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold-light);">Результат анализа</span>
-      <span id="result-badge" class="result-badge">—</span>
-      <span id="files-analyzed" style="font-size:11px;color:var(--text-muted);margin-left:auto;"></span>
+    <div class="res-header">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold-light);">Результат анализа</span>
+      <span id="result-badge" class="badge">—</span>
+      <button onclick="window.print()" style="margin-left:auto;background:none;border:1px solid var(--border);color:var(--text-muted);padding:5px 14px;border-radius:2px;cursor:pointer;font-size:11px;font-family:'Montserrat',sans-serif;letter-spacing:.08em;text-transform:uppercase;">Печать</button>
     </div>
-    <div class="result-body">
-      <div id="raw-text"></div>
+    <div class="res-body">
+      <div class="tab-bar">
+        <button class="tab active" onclick="showTab('analysis')">Анализ соответствия</button>
+        <button class="tab" onclick="showTab('kp')">Коммерческое предложение</button>
+      </div>
+      <div class="tab-pane active" id="tab-analysis">
+        <div id="raw-text"></div>
+      </div>
+      <div class="tab-pane" id="tab-kp">
+        <div id="kp-content"></div>
+      </div>
     </div>
   </div>
 
 </div>
 
-<footer>© 2024 Артикул-Мебель &nbsp;·&nbsp; Система проверки ТЗ &nbsp;·&nbsp; Powered by Claude AI</footer>
+<footer>© 2024 Артикул-Мебель &nbsp;·&nbsp; Система анализа ТЗ и генерации КП &nbsp;·&nbsp; Powered by Claude AI</footer>
 
 <script>
+const PRICE = [{"art": "00-00001488", "name": "Стул Хлоя", "note": "", "dealer": 1445, "opt_large": 1525, "opt_mid": 1715, "opt_small": 1905, "disc20": 1980, "disc15": 2105, "disc10": 2230, "retail": 2475}, {"art": "бп-00006915", "name": "Стул Хлоя МДФ", "note": "от 10 шт", "dealer": 2090, "opt_large": 2205, "opt_mid": 2480, "opt_small": 2755, "disc20": 2865, "disc15": 3040, "disc10": 3220, "retail": 3580}, {"art": "00-00001489", "name": "Каркас Хлоя и Хлоя МДФ", "note": "Каркас", "dealer": 1100, "opt_large": 1160, "opt_mid": 1305, "opt_small": 1450, "disc20": 1510, "disc15": 1600, "disc10": 1695, "retail": 1885}, {"art": "БП-00012661", "name": "Сиденье МДФ трапеция", "note": "370х370", "dealer": 990, "opt_large": 1045, "opt_mid": 1175, "opt_small": 1305, "disc20": 1355, "disc15": 1440, "disc10": 1525, "retail": 1695}, {"art": "00-00000907", "name": "Стул Хлоя складной", "note": "", "dealer": 1700, "opt_large": 1795, "opt_mid": 2020, "opt_small": 2245, "disc20": 2335, "disc15": 2480, "disc10": 2630, "retail": 2920}, {"art": "БП-00010041", "name": "Стул Хлоя-М складной", "note": "с Мягкая накладкой на спинку", "dealer": 2140, "opt_large": 2260, "opt_mid": 2545, "opt_small": 2825, "disc20": 2940, "disc15": 3125, "disc10": 3310, "retail": 3675}, {"art": "00-00001492", "name": "Каркас Хлоя складной", "note": "Каркас", "dealer": 1310, "opt_large": 1385, "opt_mid": 1555, "opt_small": 1730, "disc20": 1800, "disc15": 1915, "disc10": 2025, "retail": 2250}, {"art": "00-00001528", "name": "Стул Марк низкий\nтонкое сиденье", "note": "", "dealer": 1770, "opt_large": 1870, "opt_mid": 2100, "opt_small": 2335, "disc20": 2430, "disc15": 2580, "disc10": 2730, "retail": 3035}, {"art": "00-00000670", "name": "Стул Марк низкий\nшитое сидень", "note": "только в прайс для менеджеров", "dealer": 1910, "opt_large": 2015, "opt_mid": 2270, "opt_small": 2520, "disc20": 2620, "disc15": 2785, "disc10": 2950, "retail": 3275}, {"art": "00-00001188", "name": "Каркас Марк низкий", "note": "Каркас", "dealer": 1345, "opt_large": 1420, "opt_mid": 1600, "opt_small": 1775, "disc20": 1850, "disc15": 1965, "disc10": 2080, "retail": 2310}, {"art": "00-00000661", "name": "Стул Скалли", "note": "", "dealer": 1665, "opt_large": 1760, "opt_mid": 1980, "opt_small": 2200, "disc20": 2290, "disc15": 2430, "disc10": 2575, "retail": 2860}, {"art": "бп-00006895", "name": "Стул Скалли МДФ", "note": "от 10 шт", "dealer": 2240, "opt_large": 2370, "opt_mid": 2670, "opt_small": 2960, "disc20": 3080, "disc15": 3270, "disc10": 3470, "retail": 3850}, {"art": "00-00001533", "name": "Каркас Скалли", "note": "Каркас", "dealer": 1260, "opt_large": 1330, "opt_mid": 1500, "opt_small": 1665, "disc20": 1730, "disc15": 1840, "disc10": 1950, "retail": 2165}, {"art": "БП-00012658", "name": "Сиденье МДФ круг 370", "note": "круг 370", "dealer": 980, "opt_large": 1035, "opt_mid": 1165, "opt_small": 1295, "disc20": 1350, "disc15": 1430, "disc10": 1515, "retail": 1685}, {"art": "00-00000668", "name": "Стул Премьер", "note": "", "dealer": 1735, "opt_large": 1830, "opt_mid": 2060, "opt_small": 2290, "disc20": 2380, "disc15": 2530, "disc10": 2680, "retail": 2975}, {"art": "бп-00006886", "name": "Стул Премьер МДФ", "note": "от 10 шт", "dealer": 2320, "opt_large": 2450, "opt_mid": 2760, "opt_small": 3060, "disc20": 3180, "disc15": 3380, "disc10": 3580, "retail": 3980}, {"art": "00-00001496", "name": "Каркас Премьер", "note": "Каркас", "dealer": 1330, "opt_large": 1405, "opt_mid": 1580, "opt_small": 1755, "disc20": 1825, "disc15": 1940, "disc10": 2050, "retail": 2280}, {"art": "БП-00012661", "name": "Сиденье МДФ трапеция", "note": "370х370", "dealer": 990, "opt_large": 1045, "opt_mid": 1175, "opt_small": 1305, "disc20": 1355, "disc15": 1440, "disc10": 1525, "retail": 1695}, {"art": "00-00000669", "name": "Стул Нерон", "note": "", "dealer": 2000, "opt_large": 2110, "opt_mid": 2375, "opt_small": 2640, "disc20": 2745, "disc15": 2915, "disc10": 3085, "retail": 3430}, {"art": "00-00001536", "name": "Каркас Нерон", "note": "Каркас", "dealer": 1450, "opt_large": 1530, "opt_mid": 1725, "opt_small": 1915, "disc20": 1990, "disc15": 2115, "disc10": 2240, "retail": 2490}, {"art": "00-00000662", "name": "Стул Ромашка", "note": "", "dealer": 1735, "opt_large": 1830, "opt_mid": 2060, "opt_small": 2290, "disc20": 2380, "disc15": 2530, "disc10": 2680, "retail": 2975}, {"art": "бп-00006892", "name": "Стул Ромашка МДФ", "note": "от 10 шт", "dealer": 2375, "opt_large": 2505, "opt_mid": 2820, "opt_small": 3135, "disc20": 3260, "disc15": 3465, "disc10": 3670, "retail": 4075}, {"art": "00-00001499", "name": "Каркас Ромашка", "note": "Каркас", "dealer": 1355, "opt_large": 1430, "opt_mid": 1610, "opt_small": 1790, "disc20": 1860, "disc15": 1975, "disc10": 2095, "retail": 2325}, {"art": "БП-00012666", "name": "Сиденье МДФ круг 390", "note": "", "dealer": 1020, "opt_large": 1075, "opt_mid": 1210, "opt_small": 1345, "disc20": 1400, "disc15": 1490, "disc10": 1575, "retail": 1750}, {"art": "00-00000686", "name": "Стул Венский", "note": "", "dealer": 1610, "opt_large": 1700, "opt_mid": 1915, "opt_small": 2125, "disc20": 2210, "disc15": 2350, "disc10": 2490, "retail": 2765}, {"art": "бп-00006788", "name": "Стул Венский МДФ", "note": "от 10 шт", "dealer": 2260, "opt_large": 2390, "opt_mid": 2680, "opt_small": 2980, "disc20": 3100, "disc15": 3300, "disc10": 3490, "retail": 3880}, {"art": "00-00001464", "name": "Каркас Венский и Венский МДФ", "note": "Каркас", "dealer": 1240, "opt_large": 1310, "opt_mid": 1470, "opt_small": 1635, "disc20": 1700, "disc15": 1805, "disc10": 1915, "retail": 2125}, {"art": "БП-00012666", "name": "Сиденье МДФ круг 390", "note": "Круг 390", "dealer": 1020, "opt_large": 1075, "opt_mid": 1210, "opt_small": 1345, "disc20": 1400, "disc15": 1490, "disc10": 1575, "retail": 1750}, {"art": "00-00000683", "name": "Стул Венский пластик (от 20 шт)", "note": "сиденье пластик перфорированный", "dealer": 2000, "opt_large": 2120, "opt_mid": 2385, "opt_small": 2650, "disc20": 2755, "disc15": 2930, "disc10": 3100, "retail": 3445}, {"art": "00-00003067", "name": "Каркас Венский пластик", "note": "Каркас (требуется образец сиденья от заказчика без возврата)", "dealer": 1300, "opt_large": 1370, "opt_mid": 1545, "opt_small": 1715, "disc20": 1785, "disc15": 1895, "disc10": 2005, "retail": 2230}, {"art": "00-00003824", "name": "Пластиковое сиденье для стула Венского", "note": "ф400мм, перфорация", "dealer": 710, "opt_large": 750, "opt_mid": 840, "opt_small": 935, "disc20": 970, "disc15": 1035, "disc10": 1095, "retail": 1215}, {"art": "00-00000682", "name": "Стул «Венский- М»", "note": "", "dealer": 2000, "opt_large": 2110, "opt_mid": 2375, "opt_small": 2640, "disc20": 2745, "disc15": 2915, "disc10": 3085, "retail": 3430}, {"art": "00-00000663", "name": "Стул Ренессанс", "note": "", "dealer": 2195, "opt_large": 2315, "opt_mid": 2605, "opt_small": 2895, "disc20": 3010, "disc15": 3200, "disc10": 3390, "retail": 3765}, {"art": "00-00001507", "name": "Каркас Ренессанс", "note": "Каркас", "dealer": 1415, "opt_large": 1495, "opt_mid": 1685, "opt_small": 1870, "disc20": 1945, "disc15": 2065, "disc10": 2185, "retail": 2430}, {"art": "00-00000667", "name": "Стул Прима (от 20 шт)", "note": "", "dealer": 3060, "opt_large": 3230, "opt_mid": 3635, "opt_small": 4040, "disc20": 4200, "disc15": 4465, "disc10": 4725, "retail": 5250}, {"art": "00-00000666", "name": "Стул Прима- М (от 20 шт)", "note": "", "dealer": 3075, "opt_large": 3250, "opt_mid": 3655, "opt_small": 4060, "disc20": 4225, "disc15": 4490, "disc10": 4750, "retail": 5280}, {"art": "БП-00008297", "name": "Стул Kasper (от 20 шт)", "note": "", "dealer": 3600, "opt_large": 3800, "opt_mid": 4275, "opt_small": 4750, "disc20": 4940, "disc15": 5250, "disc10": 5560, "retail": 6175}, {"art": "БП-00024095", "name": "Стул Венеция", "note": "", "dealer": 2880, "opt_large": 3040, "opt_mid": 3420, "opt_small": 3800, "disc20": 3950, "disc15": 4200, "disc10": 4445, "retail": 4940}, {"art": "КА-00019608", "name": "Стул Платон 4 ноги", "note": "", "dealer": 4045, "opt_large": 4270, "opt_mid": 4805, "opt_small": 5340, "disc20": 5550, "disc15": 5900, "disc10": 6245, "retail": 6940}, {"art": "КА-00019605", "name": "Стул Фиона полозья (от 20 шт)", "note": "", "dealer": 4360, "opt_large": 4605, "opt_mid": 5180, "opt_small": 5755, "disc20": 5985, "disc15": 6360, "disc10": 6730, "retail": 7480}, {"art": "КА-00019598", "name": "Стул Эрудит 4 ноги", "note": "фанера фигурная", "dealer": 5515, "opt_large": 5825, "opt_mid": 6550, "opt_small": 7280, "disc20": 7570, "disc15": 8045, "disc10": 8520, "retail": 9465}, {"art": "КА-00019673", "name": "Стул Акцент (фанера) 4ноги", "note": "морилка+лак", "dealer": 5725, "opt_large": 6045, "opt_mid": 6800, "opt_small": 7555, "disc20": 7855, "disc15": 8345, "disc10": 8840, "retail": 9820}, {"art": "00-00000630", "name": "Табурет Ти-Арт мягкий", "note": "Стопируемый \nконусные ноги", "dealer": 1180, "opt_large": 1250, "opt_mid": 1405, "opt_small": 1560, "disc20": 1625, "disc15": 1725, "disc10": 1825, "retail": 2030}, {"art": "00-00001576", "name": "Каркас Ти-Арт", "note": "Каркас", "dealer": 790, "opt_large": 835, "opt_mid": 940, "opt_small": 1045, "disc20": 1090, "disc15": 1155, "disc10": 1225, "retail": 1360}, {"art": "00-00001579", "name": "Табурет круглый Экстра", "note": "", "dealer": 1230, "opt_large": 1300, "opt_mid": 1465, "opt_small": 1625, "disc20": 1690, "disc15": 1800, "disc10": 1905, "retail": 2115}, {"art": "БП-00018770", "name": "Табурет круглый Экстра МДФ", "note": "", "dealer": 1900, "opt_large": 2010, "opt_mid": 2260, "opt_small": 2510, "disc20": 2615, "disc15": 2775, "disc10": 2935, "retail": 3265}, {"art": "00-00001580", "name": "Каркас Табурет Экстра", "note": "Каркас", "dealer": 834.8, "opt_large": 880, "opt_mid": 990, "opt_small": 1100, "disc20": 1145, "disc15": 1215, "disc10": 1285, "retail": 1430}, {"art": "БП-00018314", "name": "Сиденье МДФ круг 350", "note": "", "dealer": 1070, "opt_large": 1130, "opt_mid": 1270, "opt_small": 1410, "disc20": 1470, "disc15": 1560, "disc10": 1650, "retail": 1835}, {"art": "00-00000640", "name": "Табурет квадратный Эконом", "note": "", "dealer": 1080, "opt_large": 1140, "opt_mid": 1285, "opt_small": 1425, "disc20": 1485, "disc15": 1575, "disc10": 1670, "retail": 1855}, {"art": "КА-00020438", "name": "Табурет Квадратный Эконом МДФ", "note": "", "dealer": 1330, "opt_large": 1400, "opt_mid": 1580, "opt_small": 1755, "disc20": 1825, "disc15": 1935, "disc10": 2050, "retail": 2280}, {"art": "00-00001583", "name": "Каркас Табурет Квадратный", "note": "Каркас", "dealer": 750, "opt_large": 790, "opt_mid": 890, "opt_small": 990, "disc20": 1030, "disc15": 1090, "disc10": 1155, "retail": 1285}, {"art": "бп-00006877", "name": "Табурет круглый \nСтопируемый", "note": "кожзам", "dealer": 1155, "opt_large": 1220, "opt_mid": 1375, "opt_small": 1525, "disc20": 1590, "disc15": 1685, "disc10": 1785, "retail": 1985}, {"art": "00-00000649", "name": "Стул Хлоя-Софт", "note": "остатки, снимаем с производства!", "dealer": 1440, "opt_large": 1520, "opt_mid": 1710, "opt_small": 1900, "disc20": 1975, "disc15": 2100, "disc10": 2225, "retail": 2470}, {"art": "бп-00006936", "name": "Стул Хлоя-Софт-М", "note": "с Мягкой накладкой на спинку", "dealer": 1810, "opt_large": 1910, "opt_mid": 2150, "opt_small": 2390, "disc20": 2485, "disc15": 2640, "disc10": 2795, "retail": 3105}, {"art": "00-00001522", "name": "Каркас Хлоя-Софт", "note": "Каркас", "dealer": 1070, "opt_large": 1130, "opt_mid": 1270, "opt_small": 1410, "disc20": 1470, "disc15": 1560, "disc10": 1650, "retail": 1835}, {"art": "00-00000909", "name": "Стул Пекин", "note": "остатки, снимаем с производства!", "dealer": 2815, "opt_large": 2970, "opt_mid": 3345, "opt_small": 3715, "disc20": 3865, "disc15": 4105, "disc10": 4345, "retail": 4830}, {"art": "бп-00006879", "name": "Стул Пекин CH (хром)", "note": "", "dealer": 4030, "opt_large": 4255, "opt_mid": 4790, "opt_small": 5320, "disc20": 5530, "disc15": 5880, "disc10": 6225, "retail": 6915}];
 
+const PRICE_LABELS = {
+  dealer: "Дилерская цена",
+  opt_large: "Крупный опт",
+  opt_mid: "Опт",
+  opt_small: "Мелкий опт",
+  disc20: "Скидка 20%",
+  disc15: "Скидка 15%",
+  disc10: "Скидка 10%",
+  retail: "Розница"
+};
 
-/* ── FILES ── */
 let uploadedFiles = [];
 
 const dz = document.getElementById('drop-zone');
-dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
-dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
-dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+dz.addEventListener('dragover', e=>{e.preventDefault();dz.classList.add('dragover');});
+dz.addEventListener('dragleave', ()=>dz.classList.remove('dragover'));
+dz.addEventListener('drop', e=>{e.preventDefault();dz.classList.remove('dragover');handleFiles(e.dataTransfer.files);});
 
-function handleFiles(fileList) {
-  Array.from(fileList).forEach(file => {
-    if (uploadedFiles.find(f => f.name === file.name)) return;
-    const reader = new FileReader();
-    reader.onload = e => {
-      const base64 = e.target.result.split(',')[1];
-      const mediaType = getMediaType(file.name, file.type);
-      uploadedFiles.push({ name: file.name, size: file.size, base64, mediaType });
-      renderFileList();
+function handleFiles(fl){
+  Array.from(fl).forEach(f=>{
+    if(uploadedFiles.find(x=>x.name===f.name)) return;
+    const r=new FileReader();
+    r.onload=e=>{
+      uploadedFiles.push({name:f.name,size:f.size,base64:e.target.result.split(',')[1],mediaType:getmt(f.name,f.type)});
+      renderFiles();
     };
-    reader.readAsDataURL(file);
+    r.readAsDataURL(f);
   });
 }
-
-function getMediaType(name, type) {
-  const ext = name.split('.').pop().toLowerCase();
-  if (ext === 'pdf')  return 'application/pdf';
-  if (ext === 'png')  return 'image/png';
-  if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+function getmt(n,t){
+  const e=n.split('.').pop().toLowerCase();
+  if(e==='pdf') return 'application/pdf';
+  if(e==='png') return 'image/png';
+  if(e==='jpg'||e==='jpeg') return 'image/jpeg';
   return 'text/plain';
 }
-
-function fmtSize(b) {
-  if (b < 1024) return b + ' Б';
-  if (b < 1048576) return (b/1024).toFixed(1) + ' КБ';
-  return (b/1048576).toFixed(1) + ' МБ';
-}
-
-function renderFileList() {
-  const list  = document.getElementById('file-list');
-  const badge = document.getElementById('model-count-badge');
-  list.innerHTML = '';
-  uploadedFiles.forEach((f, i) => {
-    const ext = f.name.split('.').pop().toUpperCase();
-    const div = document.createElement('div');
-    div.className = 'file-item';
-    div.innerHTML = `<span class="file-ext">${ext}</span><span class="fname">${f.name}</span><span class="fsize">${fmtSize(f.size)}</span><button class="fremove" onclick="removeFile(${i})">×</button>`;
-    list.appendChild(div);
+function fmtSize(b){if(b<1024)return b+' Б';if(b<1048576)return (b/1024).toFixed(1)+' КБ';return (b/1048576).toFixed(1)+' МБ';}
+function renderFiles(){
+  const l=document.getElementById('file-list');
+  l.innerHTML='';
+  uploadedFiles.forEach((f,i)=>{
+    const e=f.name.split('.').pop().toUpperCase();
+    const d=document.createElement('div');
+    d.className='file-item';
+    d.innerHTML=`<span class="fext">${e}</span><span class="fname">${f.name}</span><span class="fsize">${fmtSize(f.size)}</span><button class="fremove" onclick="removeFile(${i})">×</button>`;
+    l.appendChild(d);
   });
-  badge.style.display = uploadedFiles.length ? 'inline-flex' : 'none';
-  document.getElementById('model-count-num').textContent = uploadedFiles.length;
+}
+function removeFile(i){uploadedFiles.splice(i,1);renderFiles();}
+
+function setProgress(pct,lbl){
+  document.getElementById('progress-wrap').style.display='block';
+  document.getElementById('progress-label').textContent=lbl;
+  document.getElementById('progress-fill').style.width=pct+'%';
+}
+function hideProgress(){
+  document.getElementById('progress-wrap').style.display='none';
+  document.getElementById('progress-fill').style.width='0%';
 }
 
-function removeFile(i) { uploadedFiles.splice(i, 1); renderFileList(); }
-
-/* ── PROGRESS ── */
-function setProgress(pct, lbl) {
-  document.getElementById('progress-wrap').style.display = 'block';
-  document.getElementById('progress-label').textContent = lbl;
-  document.getElementById('progress-fill').style.width = pct + '%';
-}
-function hideProgress() {
-  document.getElementById('progress-wrap').style.display = 'none';
-  document.getElementById('progress-fill').style.width = '0%';
+function showTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
 }
 
-/* ── MARKDOWN ── */
-function renderMarkdown(text) {
+function renderMarkdown(text){
   return text
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/^### (.*?)$/gm,'<h3 style="font-family:\'Cormorant Garamond\',serif;font-size:16px;color:var(--gold-light);margin:18px 0 7px;font-weight:500;">$1</h3>')
-    .replace(/^## (.*?)$/gm, '<h2 style="font-family:\'Cormorant Garamond\',serif;font-size:19px;color:var(--gold-light);margin:22px 0 10px;font-weight:500;">$1</h2>')
-    .replace(/^# (.*?)$/gm,  '<h1 style="font-family:\'Cormorant Garamond\',serif;font-size:23px;color:var(--gold-light);margin:26px 0 12px;font-weight:500;">$1</h1>')
-    .replace(/^[-•] (.*?)$/gm,'<div style="padding:2px 0 2px 16px;position:relative;"><span style="position:absolute;left:0;color:var(--gold-mid);">·</span>$1</div>')
-    .replace(/✅/g,'<span style="color:#4caf7d;">✅</span>')
-    .replace(/❌/g,'<span style="color:#e07070;">❌</span>')
-    .replace(/⚠️/g,'<span style="color:#c98a4c;">⚠️</span>')
+    .replace(/^### (.*?)$/gm,'<h3 style="font-family:Cormorant Garamond,serif;font-size:15px;color:var(--gold-light);margin:16px 0 6px;font-weight:500;">$1</h3>')
+    .replace(/^## (.*?)$/gm,'<h2 style="font-family:Cormorant Garamond,serif;font-size:18px;color:var(--gold-light);margin:20px 0 8px;font-weight:500;">$1</h2>')
+    .replace(/^# (.*?)$/gm,'<h1 style="font-family:Cormorant Garamond,serif;font-size:22px;color:var(--gold-light);margin:24px 0 10px;font-weight:500;">$1</h1>')
+    .replace(/^[-•] (.*?)$/gm,'<div style="padding:2px 0 2px 14px;position:relative;"><span style="position:absolute;left:0;color:var(--gold-mid);">·</span>$1</div>')
+    .replace(/✅/g,'<span style="color:var(--ok);">✅</span>')
+    .replace(/❌/g,'<span style="color:var(--fail);">❌</span>')
+    .replace(/⚠️/g,'<span style="color:var(--warn);">⚠️</span>')
     .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
 }
 
-/* ── MAIN ── */
-async function runCheck() {
-  const tzText  = document.getElementById('tz-text').value.trim();
-  const context = document.getElementById('context-text').value.trim();
+function buildKP(analysisText, client, qty, tier) {
+  // Extract best model from analysis text
+  const tierLabel = PRICE_LABELS[tier] || tier;
+  
+  // Try to find mentioned models in price list
+  let matched = [];
+  PRICE.forEach(p => {
+    const nameLower = p.name.toLowerCase();
+    const textLower = analysisText.toLowerCase();
+    if(textLower.includes(nameLower) || textLower.includes(p.art.toLowerCase())) {
+      matched.push(p);
+    }
+  });
+  
+  // If no matches found, show all for selection
+  if(matched.length === 0) matched = PRICE.slice(0,5);
+  
+  // Build KP table
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('ru-RU');
+  
+  let html = `
+    <div style="border:1px solid var(--border);border-radius:4px;padding:24px;background:var(--bg-card);margin-bottom:20px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;">
+        <div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px;color:var(--gold-light);margin-bottom:4px;">Коммерческое предложение</div>
+          <div style="font-size:11px;color:var(--text-muted);">ООО ПК «Артикул-Мебель» · г. Санкт-Петербург</div>
+          <div style="font-size:11px;color:var(--text-muted);">тел. 8 (812) 309-74-59 · sale@artikul-mebel.ru</div>
+        </div>
+        <div style="text-align:right;font-size:12px;color:var(--text-muted);">
+          <div>Дата: ${dateStr}</div>
+          <div style="margin-top:4px;">Тип цены: <span style="color:var(--gold-mid);">${tierLabel}</span></div>
+          ${client ? `<div style="margin-top:4px;">Заказчик: <span style="color:var(--text-primary);">${client}</span></div>` : ''}
+        </div>
+      </div>`;
 
-  if (!tzText)  { alert('Введите текст ТЗ'); return; }
-  if (!uploadedFiles.length) { alert('Загрузите хотя бы один файл модели'); return; }
+  // Table
+  html += `<table class="kp-table">
+    <thead><tr>
+      <th>Артикул</th><th>Наименование</th><th>Примечание</th>
+      <th style="text-align:right">Цена (руб.)</th>
+      <th style="text-align:right">Кол-во</th>
+      <th style="text-align:right">Сумма (руб.)</th>
+    </tr></thead><tbody>`;
+  
+  let total = 0;
+  matched.forEach(p => {
+    const price = p[tier] || 0;
+    const sum = price * qty;
+    total += sum;
+    html += `<tr>
+      <td style="color:var(--text-muted);font-size:12px;">${p.art}</td>
+      <td>${p.name}</td>
+      <td style="color:var(--text-muted);font-size:12px;">${p.note}</td>
+      <td style="text-align:right">${price ? price.toLocaleString('ru-RU') : '—'}</td>
+      <td style="text-align:right">${qty}</td>
+      <td style="text-align:right;color:var(--gold-light);">${price ? sum.toLocaleString('ru-RU') : '—'}</td>
+    </tr>`;
+  });
+  
+  html += `</tbody></table>`;
+  
+  if(matched.length > 0) {
+    html += `<div class="kp-total">Итого: ${total.toLocaleString('ru-RU')} руб. (без НДС)</div>`;
+  }
 
-  const btn = document.getElementById('check-btn');
-  const spinner = document.getElementById('spinner');
-  const lbl = document.getElementById('btn-label');
-  btn.disabled = true; spinner.style.display = 'block'; lbl.textContent = 'Анализирую…';
-  document.getElementById('result-panel').style.display = 'none';
+  // Notes
+  const notes = document.getElementById('kp-notes').value.trim();
+  if(notes) {
+    html += `<div style="margin-top:16px;padding:14px 16px;border-left:2px solid var(--gold-mid);font-size:13px;color:var(--text-muted);">${notes}</div>`;
+  }
+  
+  html += `<div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted);">
+    Данное коммерческое предложение сформировано автоматически на основании анализа технического задания.
+    Окончательная стоимость согласовывается с менеджером.
+  </div>`;
+  
+  html += `</div>`;
+  
+  return html;
+}
 
-  setProgress(10, 'Подготовка файлов…');
+async function runAnalysis(){
+  const tzText = document.getElementById('tz-text').value.trim();
+  const specText = document.getElementById('spec-text').value.trim();
+  const client = document.getElementById('kp-client').value.trim();
+  const qty = parseInt(document.getElementById('kp-qty').value) || 1;
+  const tier = document.getElementById('kp-price-tier').value;
+
+  if(!tzText) { alert('Введите текст ТЗ'); return; }
+  if(!specText && uploadedFiles.length===0) { alert('Загрузите файлы или введите текстовое описание изделий'); return; }
+
+  const btn=document.getElementById('check-btn');
+  const spinner=document.getElementById('spinner');
+  const lbl=document.getElementById('btn-label');
+  btn.disabled=true; spinner.style.display='block'; lbl.textContent='Анализирую…';
+  document.getElementById('result-panel').style.display='none';
+
+  setProgress(10,'Подготовка данных…');
+
+  // Build price list summary for prompt
+  const priceNames = PRICE.map(p=>`${p.art} — ${p.name}${p.note?' ('+p.note+')':''}`).join('\n');
 
   const parts = [];
-  parts.push({
-    type: 'text',
-    text: `Ты — эксперт по тендерной документации на театральную мебель в России.\n\nТебе предоставлены:\n1. ТРЕБОВАНИЯ ТЗ\n2. ФАЙЛЫ ИЗДЕЛИЙ (${uploadedFiles.length} шт.)${context ? '\n3. КОНТЕКСТ: ' + context : ''}\n\nТРЕБОВАНИЯ ТЗ:\n${tzText}\n\nФайлы изделий для проверки:`
+  parts.push({type:'text', text:
+    `Ты — эксперт по тендерной документации на мебель (стулья, табуреты, секции кресел) компании Артикул-Мебель (Санкт-Петербург).
+
+Тебе предоставлены:
+1. ТРЕБОВАНИЯ ТЗ (технического задания заказчика)
+2. ДАННЫЕ НАШИХ ИЗДЕЛИЙ (чертежи, спецификации, описания)
+3. НАШ ПРАЙС-ЛИСТ (57 позиций)
+
+ТРЕБОВАНИЯ ТЗ:
+${tzText}
+
+НАШИ ИЗДЕЛИЯ ИЗ ПРАЙСА:
+${priceNames}
+
+${specText ? 'ТЕКСТОВОЕ ОПИСАНИЕ ИЗДЕЛИЙ:\n'+specText : ''}
+
+Файлы чертежей прилагаются ниже.`
   });
 
-  uploadedFiles.forEach((f, i) => {
-    setProgress(10 + Math.round((i+1)/uploadedFiles.length*50), `Файл ${i+1} из ${uploadedFiles.length}…`);
-    if (f.mediaType === 'application/pdf') {
-      parts.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: f.base64 }, title: f.name });
-    } else if (f.mediaType.startsWith('image/')) {
-      parts.push({ type: 'text', text: `\n--- ${f.name} ---` });
-      parts.push({ type: 'image', source: { type: 'base64', media_type: f.mediaType, data: f.base64 } });
+  uploadedFiles.forEach((f,i)=>{
+    setProgress(10+Math.round((i+1)/Math.max(uploadedFiles.length,1)*45), `Файл ${i+1}…`);
+    if(f.mediaType==='application/pdf'){
+      parts.push({type:'document',source:{type:'base64',media_type:'application/pdf',data:f.base64},title:f.name});
+    } else if(f.mediaType.startsWith('image/')){
+      parts.push({type:'text',text:`\n--- ${f.name} ---`});
+      parts.push({type:'image',source:{type:'base64',media_type:f.mediaType,data:f.base64}});
     } else {
-      try { parts.push({ type: 'text', text: `\n--- ${f.name} ---\n${atob(f.base64)}` }); }
-      catch(e) { parts.push({ type: 'text', text: `\n--- ${f.name} (ошибка чтения) ---` }); }
+      try{parts.push({type:'text',text:`\n--- ${f.name} ---\n${atob(f.base64)}`});}
+      catch(e){}
     }
   });
 
-  parts.push({
-    type: 'text',
-    text: `\n\nПроведи детальную проверку соответствия изделий требованиям ТЗ.\n\nФормат ответа:\n1. Первая строка — общий вердикт: СООТВЕТСТВУЕТ / НЕ СООТВЕТСТВУЕТ / ЧАСТИЧНОЕ СООТВЕТСТВИЕ\n2. ## ✅ Соответствия — перечисли подтверждённые параметры\n3. ## ❌ Несоответствия (критические) — с конкретными цифрами из файла vs требование ТЗ\n4. ## ⚠️ Требует уточнения — что невозможно проверить по представленным файлам\n5. ## Итог — рекомендация 2–3 предложения`
+  parts.push({type:'text', text:
+    `\n\nЗадача:
+1. Проверь соответствие наших изделий требованиям ТЗ
+2. Определи лучшие подходящие модели из нашего прайса
+3. Дай краткую сводку соответствия по каждой подходящей модели
+
+Формат ответа:
+Первая строка: СООТВЕТСТВУЕТ / НЕ СООТВЕТСТВУЕТ / ЧАСТИЧНОЕ СООТВЕТСТВИЕ
+
+## ✅ Соответствия
+[параметры которые подтверждены]
+
+## ❌ Несоответствия (критические)
+[отклонения с цифрами]
+
+## ⚠️ Требует уточнения
+[что нельзя проверить]
+
+## 🏆 Рекомендуемые модели
+[перечисли 1-3 лучших модели из прайса с артикулами и кратким обоснованием]
+
+## Итог
+[2-3 предложения с рекомендацией]`
   });
 
-  setProgress(65, 'Отправка в Claude…');
+  setProgress(65,'Отправка в Claude…');
 
   try {
-    const resp = await fetch('/api/proxy', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+    const resp = await fetch('https://reels-proxy.alexkapustyanov.workers.dev', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 2500,
-        messages: [{ role: 'user', content: parts }]
+        model:'claude-sonnet-4-6',
+        max_tokens:3000,
+        messages:[{role:'user',content:parts}]
       })
     });
 
-    setProgress(90, 'Обработка ответа…');
+    setProgress(90,'Обработка ответа…');
 
-    if (!resp.ok) {
-      const errText = await resp.text().catch(() => '');
-      throw new Error(`HTTP ${resp.status}: ${errText.slice(0,200)}`);
+    if(!resp.ok){
+      const et=await resp.text().catch(()=>'');
+      throw new Error(`HTTP ${resp.status}: ${et.slice(0,200)}`);
     }
 
-    const data = await resp.json();
-    if (data.error) throw new Error(data.error.message);
+    const data=await resp.json();
+    if(data.error) throw new Error(data.error.message);
 
-    const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+    const text=data.content.filter(b=>b.type==='text').map(b=>b.text).join('\n');
 
-    const upper = text.toUpperCase();
-    let badgeClass = 'badge-partial', badgeText = 'Частичное соответствие';
-    if (upper.includes('НЕ СООТВЕТСТВУЕТ') && !upper.includes('ЧАСТИЧНОЕ')) {
-      badgeClass = 'badge-danger'; badgeText = 'Не соответствует';
-    } else if (!upper.includes('НЕ СООТВЕТСТВУЕТ') && !upper.includes('ЧАСТИЧНОЕ') && upper.includes('СООТВЕТСТВУЕТ')) {
-      badgeClass = 'badge-success'; badgeText = 'Соответствует';
-    }
+    const upper=text.toUpperCase();
+    let bc='badge-part', bt='Частичное соответствие';
+    if(upper.includes('НЕ СООТВЕТСТВУЕТ')&&!upper.includes('ЧАСТИЧНОЕ')){bc='badge-fail';bt='Не соответствует';}
+    else if(!upper.includes('НЕ СООТВЕТСТВУЕТ')&&!upper.includes('ЧАСТИЧНОЕ')&&upper.includes('СООТВЕТСТВУЕТ')){bc='badge-ok';bt='Соответствует';}
 
-    setProgress(100, 'Готово'); setTimeout(hideProgress, 700);
+    setProgress(100,'Готово'); setTimeout(hideProgress,700);
 
-    document.getElementById('result-badge').className = 'result-badge ' + badgeClass;
-    document.getElementById('result-badge').textContent = badgeText;
-    document.getElementById('files-analyzed').textContent = `Проверено файлов: ${uploadedFiles.length}`;
-    document.getElementById('raw-text').innerHTML = renderMarkdown(text);
+    document.getElementById('result-badge').className='badge '+bc;
+    document.getElementById('result-badge').textContent=bt;
+    document.getElementById('raw-text').innerHTML=renderMarkdown(text);
 
-    const panel = document.getElementById('result-panel');
-    panel.style.display = 'block';
+    // Build KP
+    document.getElementById('kp-content').innerHTML=buildKP(text, client, qty, tier);
+
+    const panel=document.getElementById('result-panel');
+    panel.style.display='block';
     panel.classList.remove('fade-in'); void panel.offsetWidth; panel.classList.add('fade-in');
-    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    panel.scrollIntoView({behavior:'smooth',block:'start'});
 
-  } catch(err) {
+  } catch(err){
     hideProgress();
-    alert('Ошибка: ' + err.message + '\n\nПроверьте правильность API Key.');
+    alert('Ошибка: '+err.message);
   } finally {
-    btn.disabled = false; spinner.style.display = 'none'; lbl.textContent = 'Проверить соответствие';
+    btn.disabled=false; spinner.style.display='none'; lbl.textContent='Анализировать и создать КП';
   }
 }
 </script>
