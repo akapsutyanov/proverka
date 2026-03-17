@@ -355,8 +355,8 @@ async function runCheck() {
     setProgress(90, 'Обработка ответа…');
 
     if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err?.error?.message || `HTTP ${resp.status}`);
+      const errText = await resp.text().catch(() => '');
+      throw new Error(`HTTP ${resp.status}: ${errText.slice(0,200)}`);
     }
 
     const data = await resp.json();
