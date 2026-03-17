@@ -340,7 +340,7 @@ async function runCheck() {
   setProgress(65, 'Отправка в Claude…');
 
   try {
-    const resp = await fetch('https://reels-proxy.alexkapustyanov.workers.dev', {
+    const resp = await fetch('/api/proxy', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
