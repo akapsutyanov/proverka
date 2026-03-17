@@ -643,10 +643,17 @@ function downloadDocx() {
 <meta name=ProgId content=Word.Document>
 <meta name=Generator content="Microsoft Word 15">
 <!--[if gte mso 9]>
-<xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml>
+<xml><w:WordDocument>
+  <w:View>Print</w:View>
+  <w:DocumentKind>Document</w:DocumentKind>
+</w:WordDocument></xml>
+<xml><w:LatentStyles DefLockedState="false"></w:LatentStyles></xml>
 <![endif]-->
 <style>
-  body { font-family: Arial, sans-serif; font-size: 11pt; margin: 2cm; }
+  @page { size: 297mm 210mm landscape; margin: 1.5cm; }
+</style>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11pt; margin: 1.5cm; }
   table { border-collapse: collapse; width: 100%; }
   .gold { color: #8B6914; }
   .header-cell { background: #1C1710; color: #C9A84C; font-weight: bold; border: 1px solid #999; padding: 5pt 6pt; font-size: 10pt; text-align: center; }
