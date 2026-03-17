@@ -306,21 +306,64 @@ function renderMarkdown(text){
 }
 
 function buildKP(analysisText, client, qty, tier) {
-  // Extract best model from analysis text
   const tierLabel = PRICE_LABELS[tier] || tier;
-  
-  // Try to find mentioned models in price list
+  const textLower = analysisText.toLowerCase();
+
+  // 1. Сначала ищем артикулы прямо в тексте анализа
   let matched = [];
   PRICE.forEach(p => {
-    const nameLower = p.name.toLowerCase();
-    const textLower = analysisText.toLowerCase();
-    if(textLower.includes(nameLower) || textLower.includes(p.art.toLowerCase())) {
+    if(p.art && textLower.includes(p.art.toLowerCase())) {
       matched.push(p);
     }
   });
-  
-  // If no matches found, show all for selection
-  if(matched.length === 0) matched = PRICE.slice(0,5);
+
+  // 2. Если артикулы не нашли — ищем по ключевым словам названий (от длинных к коротким)
+  if(matched.length === 0) {
+    const sorted = [...PRICE].sort((a,b) => b.name.length - a.name.length);
+    sorted.forEach(p => {
+      // Берём первые значимые слова названия (>3 символов)
+      const words = p.name.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+      const mainWord = words[0];
+      if(mainWord && textLower.includes(mainWord)) {
+        // Проверяем что ещё нет дубля с тем же артикулом
+        if(!matched.find(x => x.art === p.art)) {
+          matched.push(p);
+        }
+      }
+    });
+  }
+
+  // 3. Фильтруем — оставляем только модели с количеством мест из текста если оно упомянуто
+  const placesMatch = analysisText.match(/(\d+)[МM]\s*(местн|посадочн|мест|места)/i) 
+                   || analysisText.match(/количество.*?(\d+)/i)
+                   || analysisText.match(/(\d+)\s*шт/i);
+  if(placesMatch && matched.length > 1) {
+    const num = placesMatch[1];
+    const filtered = matched.filter(p => p.places && p.places.includes(num+'М'));
+    if(filtered.length > 0) matched = filtered;
+  }
+
+  // 4. Ограничиваем до 5 лучших
+  matched = matched.slice(0, 5);
+
+  // 5. Если совсем ничего — берём похожие по категории листа
+  if(matched.length === 0) {
+    const sheetKeywords = {
+      'театр': 'Театральные кресла',
+      'кресл': 'Театральные кресла', 
+      'секци': 'Многоместные секции',
+      'банкет': 'Банкетные стулья',
+      'скамь': 'Скамьи с досками',
+    };
+    for(const [kw, sh] of Object.entries(sheetKeywords)) {
+      if(textLower.includes(kw)) {
+        matched = PRICE.filter(p => p.sheet === sh).slice(0,5);
+        break;
+      }
+    }
+  }
+
+  if(matched.length === 0) matched = PRICE.slice(0,3);
   
   // Build KP table
   const now = new Date();
@@ -460,7 +503,7 @@ ${specText ? 'ТЕКСТОВОЕ ОПИСАНИЕ ИЗДЕЛИЙ:\n'+specText : 
 [что нельзя проверить]
 
 ## 🏆 Рекомендуемые модели
-[перечисли 1-3 лучших модели из прайса с артикулами и кратким обоснованием]
+Перечисли 1-3 лучших модели из прайса. Для каждой ОБЯЗАТЕЛЬНО укажи точный артикул в формате: Артикул: XX-XXXXXXXX. Например: Артикул: 00-00000761, Название: Секция кресел Дебют 3М
 
 ## Итог
 [2-3 предложения с рекомендацией]`
