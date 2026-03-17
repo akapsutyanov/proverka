@@ -294,10 +294,11 @@ function renderMarkdown(text){
 function buildKP(analysisText, client, qty, tier) {
   const tierLabel = PRICE_LABELS[tier] || tier;
   const textLower = analysisText.toLowerCase();
+  const priceData = window._LIVE_PRICE || PRICE;
 
   // 1. Сначала ищем артикулы прямо в тексте анализа
   let matched = [];
-  PRICE.forEach(p => {
+  priceData.forEach(p => {
     if(p.art && textLower.includes(p.art.toLowerCase())) {
       matched.push(p);
     }
@@ -305,7 +306,7 @@ function buildKP(analysisText, client, qty, tier) {
 
   // 2. Если артикулы не нашли — ищем по ключевым словам названий (от длинных к коротким)
   if(matched.length === 0) {
-    const sorted = [...PRICE].sort((a,b) => b.name.length - a.name.length);
+    const sorted = [...priceData].sort((a,b) => b.name.length - a.name.length);
     sorted.forEach(p => {
       // Берём первые значимые слова названия (>3 символов)
       const words = p.name.toLowerCase().split(/\s+/).filter(w => w.length > 3);
@@ -343,7 +344,7 @@ function buildKP(analysisText, client, qty, tier) {
     };
     for(const [kw, sh] of Object.entries(sheetKeywords)) {
       if(textLower.includes(kw)) {
-        matched = PRICE.filter(p => p.sheet === sh).slice(0,5);
+        matched = priceData.filter(p => p.sheet === sh).slice(0,5);
         break;
       }
     }
@@ -508,6 +509,11 @@ ${specText ? 'ТЕКСТОВОЕ ОПИСАНИЕ ИЗДЕЛИЙ:\n'+specText : 
 
     const data=await resp.json();
     if(data.error) throw new Error(data.error.message);
+
+    // If server returned fresh price data - use it for KP
+    if(data._price && data._price.length > 0) {
+      window._LIVE_PRICE = data._price;
+    }
 
     const text=data.content.filter(b=>b.type==='text').map(b=>b.text).join('\n');
 
