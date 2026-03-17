@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Артикул-Мебель — Проверка соответствия ТЗ</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold-light: #f5d78e;
+  --gold-mid: #c9a84c;
+  --gold-dark: #8b6914;
+  --gold-shine: #ffeead;
+  --bg-deep: #0d0b08;
+  --bg-surface: #15120c;
+  --bg-card: #1c1710;
+  --bg-input: #211d13;
+  --text-primary: #f0e8d0;
+  --text-muted: #8a7d60;
+  --border: rgba(201,168,76,0.22);
+  --border-hover: rgba(201,168,76,0.55);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg-deep);color:var(--text-primary);
+  font-family:'Montserrat',sans-serif;font-weight:300;
+  min-height:100vh;overflow-x:hidden;
+}
+
+header{text-align:center;padding:56px 24px 44px;border-bottom:1px solid var(--border);}
+.ornament{
+  font-size:10px;letter-spacing:.45em;color:var(--gold-mid);text-transform:uppercase;
+  margin-bottom:14px;display:flex;align-items:center;justify-content:center;gap:14px;
+}
+.ornament::before,.ornament::after{content:'';display:block;height:1px;width:60px;background:linear-gradient(90deg,transparent,var(--gold-mid));}
+.ornament::after{transform:scaleX(-1);}
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(30px,5vw,52px);font-weight:500;
+  background:linear-gradient(135deg,var(--gold-light) 0%,var(--gold-mid) 50%,var(--gold-shine) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.15;margin-bottom:10px;
+}
+.subtitle{font-size:12px;color:var(--text-muted);letter-spacing:.14em;text-transform:uppercase;}
+
+.container{max-width:1080px;margin:0 auto;padding:0 24px;}
+
+.sec-title{
+  font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:500;
+  color:var(--gold-light);letter-spacing:.06em;margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:4px;padding:28px 30px;margin-bottom:22px;transition:border-color .3s;}
+.card:hover{border-color:var(--border-hover);}
+
+textarea,input[type=text],input[type=password]{
+  width:100%;background:var(--bg-input);border:1px solid var(--border);border-radius:3px;
+  color:var(--text-primary);font-family:'Montserrat',sans-serif;font-size:13px;font-weight:300;
+  padding:11px 15px;outline:none;transition:border-color .3s,box-shadow .3s;resize:vertical;line-height:1.6;
+}
+textarea:focus,input:focus{border-color:var(--gold-mid);box-shadow:0 0 0 3px rgba(201,168,76,.08);}
+textarea{min-height:200px;}
+label{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-muted);margin-bottom:7px;}
+.field{margin-bottom:18px;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+@media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+
+.drop-zone{
+  border:1px dashed rgba(201,168,76,.35);border-radius:4px;background:var(--bg-input);
+  padding:32px 20px;text-align:center;cursor:pointer;transition:all .25s;
+  position:relative;overflow:hidden;min-height:120px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+}
+.drop-zone:hover,.drop-zone.dragover{border-color:var(--gold-mid);background:rgba(201,168,76,.05);}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-icon{font-size:28px;line-height:1;}
+.drop-label{font-size:12px;color:var(--text-muted);letter-spacing:.06em;}
+.drop-label span{color:var(--gold-mid);}
+.drop-accepted{font-size:11px;color:var(--text-muted);margin-top:2px;}
+
+.file-list{margin-top:12px;display:flex;flex-direction:column;gap:6px;}
+.file-item{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.18);
+  border-radius:3px;padding:8px 12px;font-size:12px;
+}
+.file-item .fname{flex:1;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.file-item .fsize{color:var(--text-muted);white-space:nowrap;}
+.file-item .fremove{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:15px;line-height:1;padding:0 2px;transition:color .2s;}
+.file-item .fremove:hover{color:#e07070;}
+.file-ext{font-size:9px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:2px;font-weight:500;background:rgba(201,168,76,.15);color:var(--gold-mid);}
+
+.model-count{display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--gold-mid);padding:3px 10px;border:1px solid rgba(201,168,76,.25);border-radius:2px;background:rgba(201,168,76,.06);}
+
+.btn-gold{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--gold-dark) 0%,var(--gold-mid) 50%,var(--gold-dark) 100%);
+  background-size:200% auto;border:none;border-radius:3px;color:#0d0b08;
+  font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;
+  letter-spacing:.18em;text-transform:uppercase;padding:14px 40px;cursor:pointer;
+  transition:background-position .4s,transform .15s;
+}
+.btn-gold:hover{background-position:right center;}
+.btn-gold:active{transform:scale(.98);}
+.btn-gold:disabled{opacity:.4;cursor:not-allowed;}
+.btn-row{display:flex;justify-content:center;margin-top:8px;}
+
+.spinner{width:17px;height:17px;border:2px solid rgba(13,11,8,.3);border-top-color:#0d0b08;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+
+
+#result-panel{display:none;margin-top:28px;}
+.result-header{display:flex;align-items:center;gap:14px;padding:18px 26px;background:var(--bg-card);border:1px solid var(--border);border-bottom:none;border-radius:4px 4px 0 0;}
+.result-badge{font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:4px 12px;border-radius:2px;font-weight:500;}
+.badge-success{background:rgba(76,175,125,.14);color:#4caf7d;border:1px solid rgba(76,175,125,.28);}
+.badge-danger{background:rgba(201,76,76,.14);color:#e07070;border:1px solid rgba(201,76,76,.28);}
+.badge-partial{background:rgba(201,138,76,.14);color:#c98a4c;border:1px solid rgba(201,138,76,.28);}
+.result-body{background:var(--bg-surface);border:1px solid var(--border);border-radius:0 0 4px 4px;padding:28px 30px;}
+#raw-text{font-size:13px;line-height:1.85;color:var(--text-primary);}
+#raw-text strong{color:var(--gold-light);font-weight:500;}
+
+.progress-wrap{margin-top:14px;display:none;}
+.progress-label{font-size:11px;color:var(--text-muted);letter-spacing:.08em;margin-bottom:6px;text-transform:uppercase;}
+.progress-bar{height:2px;background:rgba(201,168,76,.15);border-radius:2px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold-mid));width:0%;transition:width .4s ease;border-radius:2px;}
+
+.fade-in{animation:fadeIn .5s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+footer{text-align:center;padding:28px 24px;color:var(--text-muted);font-size:10px;letter-spacing:.1em;border-top:1px solid var(--border);margin-top:40px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="ornament">Артикул-Мебель</div>
+  <h1>Проверка соответствия ТЗ</h1>
+  <p class="subtitle">Загрузите чертёж или спецификацию модели &nbsp;·&nbsp; Интеллектуальный анализ</p>
+</header>
+
+<div class="container" style="padding-top:36px;padding-bottom:60px;">
+
+  <!-- API KEY -->
+
+
+  <div class="two-col">
+    <!-- TZ -->
+    <div>
+      <div class="card" style="height:100%;">
+        <div class="sec-title">Техническое задание</div>
+        <div class="field">
+          <label>Требования ТЗ — вставьте текст</label>
+          <textarea id="tz-text" placeholder="Вставьте текст технического задания...&#10;&#10;Например:&#10;Количество мест: 3&#10;Высота: ≥ 900 мм&#10;Наполнитель: формованный ППУ ≥ 35 кг/м³&#10;..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILES -->
+    <div>
+      <div class="card" style="height:100%;">
+        <div class="sec-title">
+          Файлы моделей
+          <span id="model-count-badge" class="model-count" style="display:none;">
+            <span id="model-count-num">0</span> файлов
+          </span>
+        </div>
+        <div class="field">
+          <label>Загрузите PDF чертежи / спецификации</label>
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" multiple accept=".pdf,.png,.jpg,.jpeg,.txt" onchange="handleFiles(this.files)"/>
+            <div class="drop-icon">⬆</div>
+            <div class="drop-label">Перетащите файлы или <span>нажмите для выбора</span></div>
+            <div class="drop-accepted">PDF, PNG, JPG, TXT — несколько файлов сразу</div>
+          </div>
+          <div class="file-list" id="file-list"></div>
+        </div>
+        <div class="field">
+          <label>Дополнительный контекст (необязательно)</label>
+          <textarea id="context-text" style="min-height:70px;" placeholder="Артикул, серия, примечания..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="progress-wrap">
+    <div class="progress-label" id="progress-label">Подготовка…</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+
+  <div class="btn-row" style="margin-top:4px;">
+    <button class="btn-gold" id="check-btn" onclick="runCheck()">
+      <span id="btn-label">Проверить соответствие</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result-panel" class="fade-in">
+    <div class="result-header">
+      <span style="font-family:'Cormorant Garamond',serif;font-size:18px;color:var(--gold-light);">Результат анализа</span>
+      <span id="result-badge" class="result-badge">—</span>
+      <span id="files-analyzed" style="font-size:11px;color:var(--text-muted);margin-left:auto;"></span>
+    </div>
+    <div class="result-body">
+      <div id="raw-text"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>© 2024 Артикул-Мебель &nbsp;·&nbsp; Система проверки ТЗ &nbsp;·&nbsp; Powered by Claude AI</footer>
+
+<script>
+
+
+/* ── FILES ── */
+let uploadedFiles = [];
+
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('dragover'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('dragover'); handleFiles(e.dataTransfer.files); });
+
+function handleFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    if (uploadedFiles.find(f => f.name === file.name)) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const base64 = e.target.result.split(',')[1];
+      const mediaType = getMediaType(file.name, file.type);
+      uploadedFiles.push({ name: file.name, size: file.size, base64, mediaType });
+      renderFileList();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function getMediaType(name, type) {
+  const ext = name.split('.').pop().toLowerCase();
+  if (ext === 'pdf')  return 'application/pdf';
+  if (ext === 'png')  return 'image/png';
+  if (ext === 'jpg' || ext === 'jpeg') return 'image/jpeg';
+  return 'text/plain';
+}
+
+function fmtSize(b) {
+  if (b < 1024) return b + ' Б';
+  if (b < 1048576) return (b/1024).toFixed(1) + ' КБ';
+  return (b/1048576).toFixed(1) + ' МБ';
+}
+
+function renderFileList() {
+  const list  = document.getElementById('file-list');
+  const badge = document.getElementById('model-count-badge');
+  list.innerHTML = '';
+  uploadedFiles.forEach((f, i) => {
+    const ext = f.name.split('.').pop().toUpperCase();
+    const div = document.createElement('div');
+    div.className = 'file-item';
+    div.innerHTML = `<span class="file-ext">${ext}</span><span class="fname">${f.name}</span><span class="fsize">${fmtSize(f.size)}</span><button class="fremove" onclick="removeFile(${i})">×</button>`;
+    list.appendChild(div);
+  });
+  badge.style.display = uploadedFiles.length ? 'inline-flex' : 'none';
+  document.getElementById('model-count-num').textContent = uploadedFiles.length;
+}
+
+function removeFile(i) { uploadedFiles.splice(i, 1); renderFileList(); }
+
+/* ── PROGRESS ── */
+function setProgress(pct, lbl) {
+  document.getElementById('progress-wrap').style.display = 'block';
+  document.getElementById('progress-label').textContent = lbl;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+function hideProgress() {
+  document.getElementById('progress-wrap').style.display = 'none';
+  document.getElementById('progress-fill').style.width = '0%';
+}
+
+/* ── MARKDOWN ── */
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^### (.*?)$/gm,'<h3 style="font-family:\'Cormorant Garamond\',serif;font-size:16px;color:var(--gold-light);margin:18px 0 7px;font-weight:500;">$1</h3>')
+    .replace(/^## (.*?)$/gm, '<h2 style="font-family:\'Cormorant Garamond\',serif;font-size:19px;color:var(--gold-light);margin:22px 0 10px;font-weight:500;">$1</h2>')
+    .replace(/^# (.*?)$/gm,  '<h1 style="font-family:\'Cormorant Garamond\',serif;font-size:23px;color:var(--gold-light);margin:26px 0 12px;font-weight:500;">$1</h1>')
+    .replace(/^[-•] (.*?)$/gm,'<div style="padding:2px 0 2px 16px;position:relative;"><span style="position:absolute;left:0;color:var(--gold-mid);">·</span>$1</div>')
+    .replace(/✅/g,'<span style="color:#4caf7d;">✅</span>')
+    .replace(/❌/g,'<span style="color:#e07070;">❌</span>')
+    .replace(/⚠️/g,'<span style="color:#c98a4c;">⚠️</span>')
+    .replace(/\n\n/g,'<br><br>').replace(/\n/g,'<br>');
+}
+
+/* ── MAIN ── */
+async function runCheck() {
+  const tzText  = document.getElementById('tz-text').value.trim();
+  const context = document.getElementById('context-text').value.trim();
+
+  if (!tzText)  { alert('Введите текст ТЗ'); return; }
+  if (!uploadedFiles.length) { alert('Загрузите хотя бы один файл модели'); return; }
+
+  const btn = document.getElementById('check-btn');
+  const spinner = document.getElementById('spinner');
+  const lbl = document.getElementById('btn-label');
+  btn.disabled = true; spinner.style.display = 'block'; lbl.textContent = 'Анализирую…';
+  document.getElementById('result-panel').style.display = 'none';
+
+  setProgress(10, 'Подготовка файлов…');
+
+  const parts = [];
+  parts.push({
+    type: 'text',
+    text: `Ты — эксперт по тендерной документации на театральную мебель в России.\n\nТебе предоставлены:\n1. ТРЕБОВАНИЯ ТЗ\n2. ФАЙЛЫ ИЗДЕЛИЙ (${uploadedFiles.length} шт.)${context ? '\n3. КОНТЕКСТ: ' + context : ''}\n\nТРЕБОВАНИЯ ТЗ:\n${tzText}\n\nФайлы изделий для проверки:`
+  });
+
+  uploadedFiles.forEach((f, i) => {
+    setProgress(10 + Math.round((i+1)/uploadedFiles.length*50), `Файл ${i+1} из ${uploadedFiles.length}…`);
+    if (f.mediaType === 'application/pdf') {
+      parts.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: f.base64 }, title: f.name });
+    } else if (f.mediaType.startsWith('image/')) {
+      parts.push({ type: 'text', text: `\n--- ${f.name} ---` });
+      parts.push({ type: 'image', source: { type: 'base64', media_type: f.mediaType, data: f.base64 } });
+    } else {
+      try { parts.push({ type: 'text', text: `\n--- ${f.name} ---\n${atob(f.base64)}` }); }
+      catch(e) { parts.push({ type: 'text', text: `\n--- ${f.name} (ошибка чтения) ---` }); }
+    }
+  });
+
+  parts.push({
+    type: 'text',
+    text: `\n\nПроведи детальную проверку соответствия изделий требованиям ТЗ.\n\nФормат ответа:\n1. Первая строка — общий вердикт: СООТВЕТСТВУЕТ / НЕ СООТВЕТСТВУЕТ / ЧАСТИЧНОЕ СООТВЕТСТВИЕ\n2. ## ✅ Соответствия — перечисли подтверждённые параметры\n3. ## ❌ Несоответствия (критические) — с конкретными цифрами из файла vs требование ТЗ\n4. ## ⚠️ Требует уточнения — что невозможно проверить по представленным файлам\n5. ## Итог — рекомендация 2–3 предложения`
+  });
+
+  setProgress(65, 'Отправка в Claude…');
+
+  try {
+    const resp = await fetch('https://reels-proxy.alexkapustyanov.workers.dev', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 2500,
+        messages: [{ role: 'user', content: parts }]
+      })
+    });
+
+    setProgress(90, 'Обработка ответа…');
+
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `HTTP ${resp.status}`);
+    }
+
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error.message);
+
+    const text = data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+
+    const upper = text.toUpperCase();
+    let badgeClass = 'badge-partial', badgeText = 'Частичное соответствие';
+    if (upper.includes('НЕ СООТВЕТСТВУЕТ') && !upper.includes('ЧАСТИЧНОЕ')) {
+      badgeClass = 'badge-danger'; badgeText = 'Не соответствует';
+    } else if (!upper.includes('НЕ СООТВЕТСТВУЕТ') && !upper.includes('ЧАСТИЧНОЕ') && upper.includes('СООТВЕТСТВУЕТ')) {
+      badgeClass = 'badge-success'; badgeText = 'Соответствует';
+    }
+
+    setProgress(100, 'Готово'); setTimeout(hideProgress, 700);
+
+    document.getElementById('result-badge').className = 'result-badge ' + badgeClass;
+    document.getElementById('result-badge').textContent = badgeText;
+    document.getElementById('files-analyzed').textContent = `Проверено файлов: ${uploadedFiles.length}`;
+    document.getElementById('raw-text').innerHTML = renderMarkdown(text);
+
+    const panel = document.getElementById('result-panel');
+    panel.style.display = 'block';
+    panel.classList.remove('fade-in'); void panel.offsetWidth; panel.classList.add('fade-in');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch(err) {
+    hideProgress();
+    alert('Ошибка: ' + err.message + '\n\nПроверьте правильность API Key.');
+  } finally {
+    btn.disabled = false; spinner.style.display = 'none'; lbl.textContent = 'Проверить соответствие';
+  }
+}
+</script>
+</body>
+</html>
