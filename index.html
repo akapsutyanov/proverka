@@ -211,8 +211,7 @@ async function runAnalysis(){
   btn.disabled=true;spinner.style.display='block';lbl.textContent='Анализирую…';
   document.getElementById('result-panel').style.display='none';
   setProgress(10,'Подготовка данных…');
-  const priceText=PRICE.map(p=>p.art+' | '+p.sheet+' | '+p.name+(p.places?' '+p.places:'')+(p.note?' ('+p.note+')':'')+' | опт:'+(p.opt_mid||'-')).join('
-');
+  const priceText=PRICE.map(p=>p.art+' '+p.sheet+' '+p.name+(p.places?' '+p.places:'')+' '+(p.opt_mid||'-')).join('\n');
   const parts=[];
   parts.push({type:'text',text:'Ты — эксперт по тендерной документации на мебель компании Артикул-Мебель (Санкт-Петербург).
 
