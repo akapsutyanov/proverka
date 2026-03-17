@@ -489,7 +489,7 @@ ${specText ? 'ТЕКСТОВОЕ ОПИСАНИЕ ИЗДЕЛИЙ:\n'+specText : 
   setProgress(65,'Отправка в Claude…');
 
   try {
-    const resp = await fetch('https://reels-proxy.alexkapustyanov.workers.dev', {
+    const resp = await fetch('/api/proxy', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
@@ -553,7 +553,7 @@ ${text}
 Если точная цена неизвестна — поставь 0. Включи 1-3 лучших модели.`;
 
     try {
-      const kpResp = await fetch('https://reels-proxy.alexkapustyanov.workers.dev', {
+      const kpResp = await fetch('/api/proxy', {
         method:'POST',
         headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
