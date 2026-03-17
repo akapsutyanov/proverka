@@ -1,6 +1,8 @@
 export const config = {
   api: {
-    bodyParser: false,
+    bodyParser: {
+      sizeLimit: '50mb',
+    },
   },
 };
 
@@ -13,13 +15,6 @@ export default async function handler(req, res) {
     return res.status(204).end();
   }
 
-  // Read raw body as buffer
-  const chunks = [];
-  for await (const chunk of req) {
-    chunks.push(chunk);
-  }
-  const rawBody = Buffer.concat(chunks);
-
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -28,7 +23,7 @@ export default async function handler(req, res) {
       'anthropic-version': '2023-06-01',
       'anthropic-beta': 'pdfs-2024-09-25',
     },
-    body: rawBody,
+    body: JSON.stringify(req.body),
   });
 
   const data = await response.text();
