@@ -184,7 +184,7 @@ footer{text-align:center;padding:24px;color:var(--text-muted);font-size:10px;let
   </div>
 
   <!-- RESULT -->
-  <div id="result-panel" class="fade-in">
+  <div id="result-panel" style="display:none">
     <div class="res-header">
       <span style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--gold-light);">Результат анализа</span>
       <span id="result-badge" class="badge">—</span>
@@ -486,23 +486,13 @@ async function loadPriceFromGitHub() {
 }
 
 async function runAnalysis(){
-  const tzText = document.getElementById('tz-text').value.trim();
+  const tzText  = document.getElementById('tz-text').value.trim();
   const specText = document.getElementById('spec-text').value.trim();
-  const client = document.getElementById('kp-client').value.trim();
-  const qty = parseInt(document.getElementById('kp-qty').value) || 1;
-  const tier = document.getElementById('kp-price-tier').value;
+  const client  = document.getElementById('kp-client').value.trim();
+  const qty     = parseInt(document.getElementById('kp-qty').value) || 1;
+  const tier    = document.getElementById('kp-price-tier').value;
 
   if(!tzText) { alert('Введите текст ТЗ'); return; }
-
-  // Load fresh price from GitHub
-  setProgress(5,'Загрузка прайса...');
-  const livePriceData = await loadPriceFromGitHub();
-  window._LIVE_PRICE = livePriceData;
-
-  // Build price text for Claude
-  const priceForClaude = livePriceData
-    .map(p => p.art + ' | ' + p.sheet + ' | ' + p.name + (p.places?' '+p.places:'') + (p.note?' ('+p.note+')':'') + ' | опт:' + (p.opt_mid||'-'))
-    .join('\n');
   if(!specText && uploadedFiles.length===0) { alert('Загрузите файлы или введите текстовое описание изделий'); return; }
 
   const btn=document.getElementById('check-btn');
@@ -510,6 +500,14 @@ async function runAnalysis(){
   const lbl=document.getElementById('btn-label');
   btn.disabled=true; spinner.style.display='block'; lbl.textContent='Анализирую…';
   document.getElementById('result-panel').style.display='none';
+
+  setProgress(5,'Загрузка прайса...');
+  const livePriceData = await loadPriceFromGitHub();
+  window._LIVE_PRICE = livePriceData;
+
+  const priceForClaude = livePriceData
+    .map(p => p.art+' | '+p.sheet+' | '+p.name+(p.places?' '+p.places:'')+(p.note?' ('+p.note+')':'')+' | опт:'+(p.opt_mid||'-'))
+    .join('\n');
 
   setProgress(10,'Подготовка данных…');
 
@@ -548,7 +546,7 @@ ${priceForClaude}
   });
 
   parts.push({type:'text', text:
-    `\n\nЗадача: проверь соответствие наших изделий требованиям ТЗ по предоставленным файлам и описанию.
+    `\n\nЗадача: проверь соответствие наших изделий требованиям ТЗ по предоставленным файлам и описанию. Из прайса выбери подходящие позиции.
 
 Формат ответа:
 Первая строка: СООТВЕТСТВУЕТ / НЕ СООТВЕТСТВУЕТ / ЧАСТИЧНОЕ СООТВЕТСТВИЕ
@@ -563,13 +561,13 @@ ${priceForClaude}
 Что невозможно проверить по файлам
 
 ## 🏆 Рекомендуемые модели
-По итогам анализа укажи какие именно модели (из тех что в файлах) подходят под ТЗ. Для каждой ОБЯЗАТЕЛЬНО укажи артикул в формате: Артикул: 00-00000000
+По итогам анализа укажи какие позиции из прайса подходят под ТЗ. Для каждой ОБЯЗАТЕЛЬНО укажи артикул в формате: Артикул: 00-00000000
 
 ## Итог
 2-3 предложения с рекомендацией`
   });
 
-  setProgress(65,'Отправка в Claude…');
+  setProgress(60,'Отправка в Claude…');
 
   try {
     const resp = await fetch('/api/proxy', {
@@ -592,10 +590,7 @@ ${priceForClaude}
     const data=await resp.json();
     if(data.error) throw new Error(data.error.message);
 
-    // If server returned fresh price data - use it for KP
-    if(data._price && data._price.length > 0) {
-      window._LIVE_PRICE = data._price;
-    }
+    if(data._price && data._price.length > 0) window._LIVE_PRICE = data._price;
 
     const text=data.content.filter(b=>b.type==='text').map(b=>b.text).join('\n');
 
@@ -609,70 +604,7 @@ ${priceForClaude}
     document.getElementById('result-badge').className='badge '+bc;
     document.getElementById('result-badge').textContent=bt;
     document.getElementById('raw-text').innerHTML=renderMarkdown(text);
-
-    // Second call: generate KP based on analysis
-    setProgress(95,'Генерирую коммерческое предложение…');
-    document.getElementById('kp-content').innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:20px 0;">Формирую КП…</div>';
-
-    const tierLabel = PRICE_LABELS[tier] || tier;
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('ru-RU');
-
-    const kpPrompt = `На основе следующего анализа соответствия ТЗ:
-
-${text}
-
-Сформируй коммерческое предложение в формате JSON. Выбери ТОЛЬКО те модели из анализа которые рекомендованы как подходящие.
-
-Верни ТОЛЬКО JSON массив без комментариев и markdown:
-[
-  {
-    "art": "артикул из анализа",
-    "name": "полное название модели",
-    "note": "примечание если есть",
-    "price": числовая_цена_по_прайсу_или_0,
-    "reason": "краткое обоснование выбора (1 предложение)"
-  }
-]
-
-Тип цены: ${tierLabel}
-Количество: ${qty} шт.
-
-Если точная цена неизвестна — поставь 0. Включи 1-3 лучших модели.`;
-
-    try {
-      const kpResp = await fetch('/api/proxy', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          model:'claude-sonnet-4-6',
-          max_tokens:1000,
-          messages:[{role:'user', content: kpPrompt}]
-        })
-      });
-      const kpData = await kpResp.json();
-      const kpText = kpData.content?.filter(b=>b.type==='text').map(b=>b.text).join('') || '';
-
-      let models = [];
-      try {
-        const clean = kpText.replace(/```json|```/g,'').trim();
-        models = JSON.parse(clean);
-      } catch(e) {
-        // fallback: try to find in price list by name
-        models = [];
-      }
-
-      // If models found from Claude, use them; otherwise try price list lookup
-      if(!models.length) {
-        PRICE.forEach(p=>{
-          if(text.toLowerCase().includes(p.name.toLowerCase())) models.push({...p, reason:'Найдено в прайсе'});
-        });
-      }
-
-      document.getElementById('kp-content').innerHTML = buildKP(text, client, qty, tier);
-    } catch(e) {
-      document.getElementById('kp-content').innerHTML = '<div style="color:var(--fail);font-size:13px;">Ошибка генерации КП: ' + e.message + '</div>';
-    }
+    document.getElementById('kp-content').innerHTML=buildKP(text, client, qty, tier);
 
     const panel=document.getElementById('result-panel');
     panel.style.display='block';
@@ -753,7 +685,7 @@ function downloadDocx() {
 </head>
 <body>
 <p style="font-size:16pt;font-weight:bold;color:#C9A84C;margin:0">ООО ПК «Артикул-Мебель»</p>
-<p style="font-size:9pt;color:#888;margin:2pt 0 4pt">г. Санкт-Петербург &nbsp;|&nbsp; тел. 8 (812) 309-74-59 &nbsp;|&nbsp; sale@artikul-mebel.ru</p>
+<p style="font-size:9pt;color:#888;margin:2pt 0 4pt">г. Санкт-Петербург &nbsp;|&nbsp; тел. 8 (812) 309-74-59 &nbsp;|&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="e093818c85a0819294898b958ccd8d8582858cce9295">[email&#160;protected]</a></p>
 <hr class="gold">
 <p style="font-size:16pt;font-weight:bold;margin:10pt 0 4pt">КОММЕРЧЕСКОЕ ПРЕДЛОЖЕНИЕ</p>
 <p style="font-size:9pt;color:#888;margin:0 0 12pt">Дата: ${now} &nbsp;&nbsp; Тип цены: ${tierLabel} &nbsp;&nbsp; Заказчик: ${client}</p>
@@ -784,22 +716,10 @@ ${notes ? '<p style="margin-top:14pt"><b>Условия:</b><br>' + notes + '</p
 
 <hr style="border:none;border-top:1px solid #eee;margin-top:20pt">
 <p class="footnote">Данное КП сформировано автоматически на основании анализа технического задания. Окончательная стоимость согласовывается с менеджером.</p>
-</body></html>`;
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script></body></html>`;
 
   const blob = new Blob([html], { type: 'application/msword;charset=utf-8' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = 'КП_' + client + '_' + now.replace(/\./g,'-') + '.doc';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  btn.textContent = '⬇ Скачать КП (.doc)';
-  btn.disabled = false;
-}
-
-</script>
-</body>
-</html>
+  a.download = 'КП_' + client + '_' + now.replace(/
