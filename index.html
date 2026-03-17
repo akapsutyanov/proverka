@@ -581,7 +581,7 @@ ${text}
         });
       }
 
-      document.getElementById('kp-content').innerHTML = buildKPFromModels(models, client, qty, tier, tierLabel, dateStr);
+      document.getElementById('kp-content').innerHTML = buildKP(models, client, qty, tier, tierLabel, dateStr);
     } catch(e) {
       document.getElementById('kp-content').innerHTML = '<div style="color:var(--fail);font-size:13px;">Ошибка генерации КП: ' + e.message + '</div>';
     }
