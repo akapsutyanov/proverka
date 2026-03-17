@@ -97,6 +97,7 @@ footer{text-align:center;padding:24px;color:var(--text-muted);font-size:10px;let
 .fade-in{animation:fadeIn .5s ease;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <header>
@@ -417,6 +418,73 @@ function buildKP(analysisText, client, qty, tier) {
   return html;
 }
 
+
+let _livePriceCache = null;
+
+async function loadPriceFromGitHub() {
+  if (_livePriceCache) return _livePriceCache;
+  try {
+    const resp = await fetch('https://raw.githubusercontent.com/akapsutyanov/proverka/main/price.xlsx');
+    if (!resp.ok) throw new Error('price.xlsx not found');
+    const buf = await resp.arrayBuffer();
+    const wb = XLSX.read(buf, { type: 'array' });
+
+    const SKIP = new Set(['Доставка','Упаковка','Цвета','Данные']);
+    const items = [];
+
+    wb.SheetNames.forEach(shName => {
+      if (SKIP.has(shName)) return;
+      const ws = wb.Sheets[shName];
+      const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: null });
+
+      // Find header row
+      let hdrIdx = rows.findIndex(r => r[0] === 'Артикул');
+      if (hdrIdx < 0) return;
+      const hdr = rows[hdrIdx];
+
+      let colD = null, colPl = null, colNt = null;
+      hdr.forEach((h, ci) => {
+        if (!h) return;
+        const s = String(h);
+        if (s.includes('Дилерская')) colD = ci;
+        if (s.includes('Места'))     colPl = ci;
+        if (s.includes('Примечание')) colNt = ci;
+      });
+      if (colD === null) return;
+
+      let curName = null;
+      rows.slice(hdrIdx + 1).forEach(row => {
+        const name = row[1] ? String(row[1]).trim().replace(/\s+/g,' ') : null;
+        if (name) curName = name;
+        if (!curName || !row[0]) return;
+        const art = String(row[0]).trim();
+        const dealer = parseFloat(row[colD]);
+        if (!dealer || isNaN(dealer)) return;
+
+        const p = [];
+        for (let k = 0; k < 8; k++) {
+          const v = parseFloat(row[colD + k]);
+          p.push(isNaN(v) ? null : Math.round(v));
+        }
+        items.push({
+          sheet: shName, art, name: curName,
+          places: colPl !== null && row[colPl] ? String(row[colPl]).trim() : '',
+          note:   colNt !== null && row[colNt] ? String(row[colNt]).trim().replace(/\s+/g,' ') : '',
+          dealer: p[0], opt_large: p[1], opt_mid: p[2], opt_small: p[3],
+          disc20: p[4], disc15: p[5], disc10: p[6], retail: p[7]
+        });
+      });
+    });
+
+    _livePriceCache = items;
+    console.log('Price loaded from GitHub:', items.length, 'items');
+    return items;
+  } catch(e) {
+    console.warn('Failed to load price from GitHub, using embedded:', e.message);
+    return PRICE; // fallback to embedded price
+  }
+}
+
 async function runAnalysis(){
   const tzText = document.getElementById('tz-text').value.trim();
   const specText = document.getElementById('spec-text').value.trim();
@@ -425,6 +493,16 @@ async function runAnalysis(){
   const tier = document.getElementById('kp-price-tier').value;
 
   if(!tzText) { alert('Введите текст ТЗ'); return; }
+
+  // Load fresh price from GitHub
+  setProgress(5,'Загрузка прайса...');
+  const livePriceData = await loadPriceFromGitHub();
+  window._LIVE_PRICE = livePriceData;
+
+  // Build price text for Claude
+  const priceForClaude = livePriceData
+    .map(p => p.art + ' | ' + p.sheet + ' | ' + p.name + (p.places?' '+p.places:'') + (p.note?' ('+p.note+')':'') + ' | опт:' + (p.opt_mid||'-'))
+    .join('\n');
   if(!specText && uploadedFiles.length===0) { alert('Загрузите файлы или введите текстовое описание изделий'); return; }
 
   const btn=document.getElementById('check-btn');
@@ -440,14 +518,18 @@ async function runAnalysis(){
     `Ты — эксперт по тендерной документации на мебель компании Артикул-Мебель (Санкт-Петербург).
 
 Тебе предоставлены:
-1. ТРЕБОВАНИЯ ТЗ (технического задания заказчика)
+1. ТРЕБОВАНИЯ ТЗ
 2. ФАЙЛЫ НАШИХ ИЗДЕЛИЙ (чертежи, спецификации)
 ${specText ? '3. ТЕКСТОВОЕ ОПИСАНИЕ ИЗДЕЛИЙ' : ''}
+4. ПОЛНЫЙ ПРАЙС (${livePriceData.length} позиций, все категории)
 
 ТРЕБОВАНИЯ ТЗ:
 ${tzText}
 
 ${specText ? 'ТЕКСТОВОЕ ОПИСАНИЕ ИЗДЕЛИЙ:\n'+specText : ''}
+
+ПОЛНЫЙ ПРАЙС (артикул | категория | название | цена опт):
+${priceForClaude}
 
 Файлы чертежей прилагаются ниже.`
   });
@@ -667,6 +749,7 @@ function downloadDocx() {
   hr.gold { border: none; border-top: 2px solid #C9A84C; margin: 8pt 0; }
   .footnote { color: #aaa; font-size: 9pt; }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
 <p style="font-size:16pt;font-weight:bold;color:#C9A84C;margin:0">ООО ПК «Артикул-Мебель»</p>
